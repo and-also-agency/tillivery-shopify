@@ -1,0 +1,265 @@
+{% layout 'event-layout' %}
+
+<div class="hero">
+  <div class="logo"><img src="https://cdn.shopify.com/s/files/1/1837/8723/files/Tillivery_29ab3e46-48a8-47aa-ab37-e391e46e59dd.png?6882447071651269700"></div>
+  <div>
+    <h1>{{ page.title }}</h1>
+    <p>August 6th, 2017 @ TILL Kitchen Briargate</p>  
+  </div>
+
+</div>
+
+<div class="page-width">
+  <div class="grid grid--uniform">
+    <div id="content" class="grid__item small--one-whole medium-up--one-half">
+      <p class="lead">Come join us at the TILLIVERY Preview Event on Sunday, August 6th at 3:00pm, 4:30pm, or 6:00pm. </p>
+      <p>At this event, we will be offering FREE tastings of the TILLIVERY family-style meals and answering your questions. </p>
+      <p>Meals are starting at $49.99/wk and are delivered as 3-course family-style meals, including an entrée, soup, salad & sourdough bread to serve four—for less than $12.50 per serving, including delivery!</p>
+      <p>You will not receive an automatic confirmation email upon submitting this form. </p>
+      <p>When you RSVP, you will receive a text and email reminder and RSVP confirmation closer to 8/6. </p>
+      <p>PLEASE NOTE: We are only currently delivering to homes that are within 12 miles of our restaurant located at:</p>
+      <address>9633 Prominent Point<br>
+        Colorado Springs, CO 80924</address>
+      <p>We also offer a pickup option for those that live outside of 12 miles of our restaurant. </p>
+      <p>For more info, please visit <a href="/">www.tillivery.com</a></p>
+    </div>
+    <div id="contactFormWrapper" class="grid__item small--one-whole medium-up--one-half">
+      <div class="grid grid--uniform event-form">
+        <div class="form-header">
+          <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/header-rsvp.svg?10672025135998301847" alt="RSVP" height="65" width="68">
+        </div>
+        <form id="event-registration" action="#" method="post" class="contact-form">
+          <input type="hidden" id="lead_source_most_recent" name="lead_source_most_recent" value="Event">
+          <input type="hidden" id="lead_source_most_recent_detail" name="lead_source_most_recent_detail" value="{{ page.title }}">
+
+          {% if form.errors %}
+          <div class="errorForm feedback">
+            <!-- {{ form.errors.size }} or {{ form.errors | size }} -->
+            <p>Your contact form has {{ form.errors | size | pluralize: "an error", "a few errors" }}. To submit your form, make the following changes and try again:</p>
+            {% for field in form.errors %}
+            <p>The {{ field | capitalize | replace: 'Body', 'Message' }} field {{ form.errors.messages[field] }}.</p>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="form-group clearfix">
+            <div class="grid__item">
+              <h4>What time would you like to attend?</h4>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div class="grid__item small--one-whole medium-up--one-third">
+              <input class="checkbox-custom" type="radio" name="contact[time]" value="3:00 pm" id="300">
+              <label for="300" class="">3:00 pm</label>
+            </div>             
+            <div class="grid__item small--one-whole medium-up--one-third">
+              <input class="checkbox-custom" type="radio" name="contact[time]" value="4:30 pm" id="430">
+              <label for="430" class="">4:30 pm</label>
+            </div> 
+            <div class="grid__item small--one-whole medium-up--one-third">
+              <input class="checkbox-custom" type="radio" name="contact[time]" value="6:00 pm" id="600">
+              <label for="600" class="">6:00 pm</label>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div class="grid__item">
+              <h4>Tell us a little about yourself</h4>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormFirstName">First Name</label>
+              <input type="text" required id="contactFormFirstName" name="contact[fname]">
+            </div>
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormLastName">Last Name</label>
+              <input type="text" required id="contactFormLastName" name="contact[lname]">
+            </div>
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormAddress1">Address Line 1</label>
+              <input type="text" required id="contactFormAddress1" name="contact[address1]">
+            </div>
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormAddress2">Address Line 2</label>
+              <input type="text" id="contactFormAddress2" name="contact[address2]">
+            </div>
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormCity">City</label>
+              <input type="text" required id="contactFormCity" name="contact[city]">
+            </div> 
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormState">State</label>
+              <select name="contactFormState">
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="DC">District Of Columbia</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+              </select>
+            </div>        
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormTelephone">{{ 'contact.form.phone' | t }}</label>
+              <input type="telephone" id="contactFormTelephone" name="contact[phone]">
+            </div>
+            <div class="grid__item small--one-whole medium-up--one-half">
+              <label for="contactFormEmail">{{ 'contact.form.email' | t }}</label>
+              <input type="email" required id="contactFormEmail" name="contact[email]">
+            </div> 
+          </div>
+          <div class="form-group clearfix">
+            <div class="grid__item">
+              <h4>Bring up to five guests, just tell us who is coming!</h4>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div id="additionalGuests">
+              <div class="grid__item small--one-whole medium-up--one-half">
+                <label for="contactFormAdditionalGuest1">Guest Name</label>
+                <input type="text" id="contactFormAdditionalGuest1" name="contact[guest1]">
+              </div>
+              <div class="grid__item one-whole">
+                <a href="#" id="addGuest"><i class="fa fa-plus-circle "></i> Add Another Guest</a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <div class="grid__item">
+              <input type="submit" id="contactFormSubmit" value="I'll Be There" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>  
+
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(window.location.search);
+    if (results == null) {
+      return "";
+    } else {
+      return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+  }  
+
+  $(function() {
+
+    function addFormElem(paramName, fieldName) {
+      var paramValue = getParameterByName(paramName);
+      var $utmEl = $("<input type='hidden' name='" + fieldName + "' value='" + paramValue + "'>");
+      if (paramValue != "") {
+        $("#event-registration").prepend($utmEl);
+      }
+    }
+
+    // Note: Only change the values after ":"
+    // They match the field values in Marketo for the utm codes
+    var utmParams = {
+      "utm_source": "utm_source",
+      "utm_medium": "utm_medium",
+      "utm_campaign": "utm_campaign",
+      "utm_content": "utm_content",
+      "utm_term": "utm_term",
+      "ppc_adgroup": "ppc_adgroup",
+      "ppc_loc": "ppc_loc"
+    };
+
+    for (var param in utmParams) {
+      addFormElem(param, utmParams[param]);
+    } 
+
+    var max_fields      = 5;
+    var wrapper         = $('#additionalGuests'); // guests wrapper
+    var add_button      = $('#addGuest');
+
+    var x = 1;
+
+    // add guest
+    $(add_button).click(function(e) {
+      e.preventDefault();
+      if(x < max_fields){
+        x++;
+        $('<div class="guest-wrap"><label for="contactFormAdditionalGuest'+ x +'">Guest Name</label><input type="text" id="contactFormAdditionalGuest'+ x +'" name="contact[guest'+ x +']"/><a href="#" class="remove"><i class="fa fa-times-circle"></i> Remove</a></div>').insertBefore(add_button).hide().fadeIn(1000);
+
+        return false;
+      }
+    });
+
+    // remove guest
+    $(document).on('click', '.remove', function(e) { 
+      e.preventDefault(); 
+      $(this).parent('div').fadeOut(500, function() {
+        $(this).remove();
+      });
+      x--;
+      return false;
+    });
+
+    $('#event-registration').submit(function(e){
+      e.preventDefault();
+      $.ajax({
+        url:'https://hooks.zapier.com/hooks/catch/2280294/5aosap/',
+        type:'post',
+        data:$('#event-registration').serialize(),
+        success:function(){
+          // Redirect to another success page
+          window.location = "/pages/thanks-for-registering";
+        }
+      });
+    }); 
+
+
+  }); 
+</script>

@@ -1,0 +1,112 @@
+   <div class="page-width">
+
+      
+       
+        <p class="text-center">
+      <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/congrats.png?8969303803122503178">
+          </p>
+    
+       
+            
+          <div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+
+      
+      <div class="form-vertical">
+        {% form 'create_customer' %}
+
+          <h1 class="text-center">CREATE YOUR TILLIVERY ACCOUNT</h1>
+         <p class="text-center" style="margin-top:20px;">
+        Start with a 30 day, weekly subscription and you'll enjoy delicious meals, fewer chores and more free time.</p>   
+    
+
+          {{ form.errors | default_errors }}
+
+          <label for="FirstName">{{ 'customer.register.first_name' | t }}</label>
+          <input type="text" name="customer[first_name]" id="FirstName" {% if form.first_name %}value="{{ form.first_name }}"{% endif %} autofocus>
+
+          <label for="LastName">{{ 'customer.register.last_name' | t }}</label>
+          <input type="text" name="customer[last_name]" id="LastName" {% if form.last_name %}value="{{ form.last_name }}"{% endif %}>
+
+          {% include "scm-attribute-register" %}
+
+          <label for="Email">{{ 'customer.register.email' | t }}</label>
+          <input type="email" name="customer[email]" id="Email" class="{% if form.errors contains 'email' %} input--error{% endif %}" {% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off">
+
+          <label for="CreatePassword">{{ 'customer.register.password' | t }}</label>
+          <input type="password" name="customer[password]" id="CreatePassword" class="{% if form.errors contains 'password' %} input--error{% endif %}">
+        
+          <!-- a Stripe Element will be inserted here. -->
+<!--           <label for="card-element">Credit or debit card</label>
+          <div id="card-element"></div> -->
+
+          <!-- Used to display Element errors -->
+<!--           <div id="card-errors" role="alert"></div> -->
+        
+          <input type="checkbox" name="vehicle" value="Bike"><a href="https://tillivery.com/pages/terms">I've read the terms, conditions and promises here.</a><br>
+
+        
+        <p></p>
+          <p class="text-center">
+            <input type="submit" value="CREATE ACCOUNT" class="btn">
+          </p>
+
+        {% endform %}
+      </div>
+    </div>
+
+    
+<!-- <script>
+  
+  // Custom styling can be passed to options when creating an Element.
+  var style = {
+    base: {
+      // Add your base input styles here. For example:
+      
+    }
+  };
+
+  // Create an instance of the card Element
+  var card = elements.create('card', {style: style});
+
+  // Add an instance of the card Element into the `card-element` <div>
+  card.mount('#card-element');
+  
+  // Create a token or display an error when the form is submitted.
+  var form = document.getElementById('create_customer');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    stripe.createToken(card).then(function(result) {
+      if (result.error) {
+        // Inform the user if there was an error
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+      } else {
+        // Send the token to your server
+        stripeTokenHandler(result.token);
+      }
+    });
+  });
+  
+  // Insert the token ID into the form so it gets submitted to the server
+  function stripeTokenHandler(token) {  
+    var form = document.getElementById('create_customer');
+    var hiddenInput = document.createElement('input');
+    hiddenInput.setAttribute('type', 'hidden');
+    hiddenInput.setAttribute('name', 'stripeToken');
+    hiddenInput.setAttribute('value', token.id);
+    form.appendChild(hiddenInput);
+
+    // Submit the form
+    form.submit();
+  }
+</script> -->
+    
+
+    
+    
+    
+    
+    

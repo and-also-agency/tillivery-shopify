@@ -1,0 +1,166 @@
+<div id="shopify-section-1492143466948" class="shopify-section index-section index-section--flush"><div class="hero hero--large hero__overlay" style="background-image: url(https://cdn.shopify.com/s/files/1/1837/8723/t/8/assets/masthead__box-meals.jpg?16553616216863350704); background-position: center center;">
+  <div class="hero__inner">
+    <div class="page-width text-center">
+
+      <img src="https://cdn.shopify.com/s/files/1/1837/8723/t/8/assets/masthead__box-meals-text.png?3217918001699482859" width="431px" style="margin-top:40px;" alt="Start your order">
+      <div class="rte-setting mega-subtitle">
+        <p>Order a delicious and convenient four course meal to match your dietary needs. We rotate the items every week, so you'll get an appetizing surprise.</p>
+        <ul>
+          <li class="material-icons" style="letter-spacing:-17px;">star_ratestar_ratestar_ratestar_rate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="page-width">  
+  <div class="grid">
+    <div class="grid__item medium-up--one-whole">
+      <div class="section-header text-center">
+        <h1>Select Your Box Meal</h1>
+        {% unless customer %}<p class="login-warning">You must be logged in to order. <a href="/account/login">Login</a> Don't have an account? <a href="/pages/signup">Sign Up</a></p>{% endunless %}
+      </div>
+
+      <div class="flex-row">
+        {% for product in collections.box-meals.products %}
+        {% assign variant = product.selected_or_first_available_variant %}
+        <div class="flex-col flex-col--33">
+          <div class="menu-card">
+            <div class="menu-card__img box" style="background: url({{ product | img_url: '400x308' }}) center center/cover no-repeat;">
+            </div>
+            <div class="menu-card__body">
+              <h4 class="product-title">{{ product.title }}</h4>
+              <p>{{ product.description }}</p>
+              <div class="menu-card__actions">
+                <input min="1" type="number" id="quantity" name="quantity" value="1" />
+                <div class="btn btn-alacarte-item {% unless customer %}disabled{% endunless %}" data-id="{{variant.id}}">
+                  <span>Add To Order</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">  
+  
+  $(function() {
+
+    updateCart = function (button, title, quantity, data) {
+
+      var dataJS = eval(data);
+      var currentItems = dataJS['items'];
+      var variants_to_update = {};
+      var variant_id = button.data('id');
+      var button_text = button.find('span');
+      var product_title = title;
+      var match;
+      var currentQuant = 0;
+      var notification = function() {
+        $('.added-product').text(product_title);
+        $('.added-notification').toggleClass('open');
+        setTimeout(function() { $('.added-notification').toggleClass('open'); }, 3000);
+      }
+
+      //         Check if added item is already in the cart
+      for (var i = 0; i < currentItems.length; i++) {
+        if (currentItems[i].variant_id == variant_id) {
+          match = currentItems[i];
+          currentQuant = match['quantity'];      
+        }
+      }
+
+      //         Add the product and the quantity
+      var variant_quantity = quantity + currentQuant;
+      variants_to_update[variant_id] = variant_quantity;
+
+      //         Add to the cart
+      jQuery.ajax({
+        type: 'POST',
+        async: true,
+        context: this,
+        url: '/cart/update.js',
+        data: JSON.stringify({
+          updates: variants_to_update
+        }),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        beforeSend: function(){
+          button_text.text('');
+          $('.btn-alacarte-item').css({
+            'pointer-events' : 'none',
+            'background' : '#c4c4c5'
+          });
+          button.append('<div class="loader">Loading...</div>');
+        },
+        success: function () {
+          $.getJSON('/cart.js', function(cart) {
+            if ($('#CartCount').length == 0) {
+              $('.site-header__cart .icon__fallback-text').after('<div id="CartCount" class="site-header__cart-count"><span>' + cart.item_count + '</span></div>');
+            } else {
+              $('#CartCount').find('span').text(cart.item_count);
+            }
+          });
+          notification();
+          setTimeout(function(){
+            $('.loader').fadeOut(400, function() {
+              $('.loader').remove();
+              button.css('background','#8ec430');
+              button_text
+              .hide()
+              .html('<i class="fa fa-check"></i>')
+              .fadeIn(400)
+              .delay(1400)
+              .fadeOut(400)
+              .queue(function() {
+                $(button).find('i').remove().dequeue();
+                $(button_text).hide().dequeue();
+                $(button_text).text('Add to Order').dequeue();
+                $(button_text).fadeIn(400);                  
+              });
+              $('.btn-alacarte-item').css({
+                'pointer-events' : 'auto',
+                'background' : '#8ec430'
+              });
+            });
+          }, 1500);          
+        },
+        error: function (err) {}
+      });         
+    };
+
+    //       When the button is clicked
+    $('.btn-alacarte-item').on('click', function(e) {
+      e.preventDefault();
+      if($(this).hasClass('disabled')) {
+        $('.error-notification').toggleClass('open');
+        setTimeout(function() { $('.error-notification').toggleClass('open'); }, 5000);
+        return;
+      }      
+      var clicked = $(this);
+      var product_title = $(this).closest('.menu-card__body').find('.product-title').text();
+      var quantity = parseInt($(this).siblings('#quantity').val());
+
+      //         Get the current cart
+      jQuery.ajax({
+        type: 'GET',
+        async: true,
+        dataType: 'json',
+        url: '/cart.js',
+        success: function(data){
+          var response = data;
+          updateCart(clicked, product_title, quantity, response);
+        },
+        error: function () {
+        }
+      });
+      return false;
+    });
+      
+  });
+
+</script>

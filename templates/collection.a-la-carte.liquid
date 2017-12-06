@@ -1,0 +1,10 @@
+{{ 'remodal.css' | asset_url | stylesheet_tag }}
+{{ 'remodal-default-theme.css' | asset_url | stylesheet_tag }}
+
+{% comment %}
+  The contents of the collection.liquid template can be found in /sections/collection-template.liquid
+{% endcomment %}
+
+{% section 'collection-alacarte' %}
+
+{{ 'remodal.min.js' | asset_url | script_tag }}

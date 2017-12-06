@@ -1,0 +1,321 @@
+<script>
+$(function() {
+	jQuery.getJSON('/cart.js', function(cart) {
+  		$('#cartCount').html(cart.item_count);
+	});
+});
+</script>
+
+<style>
+  {% case section.settings.grid %}
+  {% when '2' %}
+  .grid__item--{{section.id}} .grid-view-item__image {
+    max-height: 530px;
+  }
+  {% when '3' %}
+  .grid__item--{{section.id}} .grid-view-item__image {
+    max-height: 345px;
+  }
+  {% when '4' %}
+  .grid__item--{{section.id}} .grid-view-item__image {
+    max-height: 250px;
+  }
+  {% when '5' %}
+  .grid__item--{{section.id}} .grid-view-item__image {
+    max-height: 195px;
+  }
+  {% endcase %}
+</style>
+
+
+{% if section.settings.layout == 'grid' %}
+{%- assign limit = section.settings.grid | times: section.settings.rows -%}
+{% else %}
+{%- assign limit = 50000 -%}
+{% endif %}
+
+{% paginate collection.products by 500 %}
+
+<div data-section-id="{{ section.id }}" data-section-type="collection-template">
+
+<div class="page-container drawer-page-content" id="PageContainer">
+
+
+
+
+
+  <div id="shopify-section-1492143466948" class="shopify-section index-section index-section--flush"><div class="hero hero--large hero__overlay" style="background-image: url(https://cdn.shopify.com/s/files/1/1837/8723/files/cookiebanner.jpg?4612391596539813717;); background-position: center center;">
+
+    <div class="hero__inner">
+      <div class="page-width text-center">
+
+        <h1 class="mega-title slideshow__title mega-title--large">Have a sweet tooth?</h1>
+
+
+        <span class="mega-subtitle slideshow__subtitle mega-subtitle--large">Try our bakery fresh chocolate chip cookies<ul><li class="material-icons" style="letter-spacing:-17px;">star_ratestar_ratestar_ratestar_rate</li></ul></span>
+
+
+      </div>
+    </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="page-width">
+    <div class="text-center" style="margin-bottom:30px;">
+      <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/addons.png?4364876904127531320">
+
+    </div>
+  </div>
+
+
+
+  <div class="page-width" id="Collection">
+    {% if section.settings.layout == 'grid' %}
+    {% case section.settings.grid %}
+    {% when '2' %}
+    {%- assign grid_item_width = 'medium-up--one-half' -%}
+    {%- assign image_size = '530x530' -%}
+    {% when '3' %}
+    {%- assign grid_item_width = 'small--one-half medium-up--one-third' -%}
+    {%- assign image_size = '345x345' -%}
+    {% when '4' %}
+    {%- assign grid_item_width = 'small--one-half medium-up--one-quarter' -%}
+    {%- assign image_size = '250x250' -%}
+    {% when '5' %}
+    {%- assign grid_item_width = 'small--one-half medium-up--one-fifth' -%}
+    {%- assign image_size = '195x195' -%}
+    {% endcase %}
+
+    <div class="grid grid--uniform{% if collection.products_count > 0 %} grid--view-items{% endif %}">
+      {% for product in collection.products %}
+      <div class="grid__item grid__item--{{section.id}} {{ grid_item_width }}">
+        {% include 'product-card-grid', grid_image_width: image_size %}
+      </div>
+      {% else %}
+      {% comment %}
+      Add default products to help with onboarding for collections/all only.
+
+      The onboarding styles and products are only loaded if the
+      store has no products.
+      {% endcomment %}
+      {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0 %}
+      <div class="grid__item">
+        <div class="grid grid--uniform">
+          {% for i in (1..limit) %}
+          <div class="grid__item {{ grid_item_width }}">
+            <div class="grid-view-item">
+
+              <div class="grid-view-item__image">
+                {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+              <div class="h4 grid-view-item__title">{{ 'homepage.onboarding.product_title' | t }}</div>
+              <div class="grid-view-item__meta">
+                <span class="product-price__price">$19.99</span>
+              </div>
+
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      {%- assign is_empty_collection = true -%}
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="list-view-items">
+      {% for product in collection.products %}
+
+        {% include 'product-card-list', product: product %}
+
+        {% else %}
+
+        {% comment %}
+        Add default products to help with onboarding for collections/all only.
+
+        The onboarding styles and products are only loaded if the
+        store has no products.
+        {% endcomment %}
+        {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0%}
+        {% for i in (1..4) %}
+
+        <div class="list-view-item__image-column">
+          <div class="list-view-item__image-wrapper">
+            <div class="list-view-item__image">
+              {%- assign placeholder = 'placeholder-product-' | append: i -%}
+              {% include placeholder %}
+            </div>
+          </div>
+        </div>
+
+        <div class="list-view-item__title-column">
+          <div class="list-view-item__title">{{ 'homepage.onboarding.product_title' | t }}</div>
+        </div>
+
+        <div class="list-view-item__price-column">
+          <span class="product-price__price">$19.99</span>
+        </div>
+
+        {% endfor %}
+        {% else %}
+        {%- assign is_empty_collection = true -%}
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if is_empty_collection %}
+    <div class="grid__item small--text-center">
+      <p class="text-center">{{ 'collections.general.no_matches' | t }}</p>
+    </div>
+    {% endif %}
+
+    {% if paginate.pages > 1 %}
+    {% include 'pagination' %}
+    {% endif %}
+  </div>
+
+
+
+
+
+
+
+
+
+  <div class="product-form__item product-form__item--submit" style="text-align:center; margin-top:70px;">
+    <a href="/cart"> <button type="submit" name="add" id="AddToCart-product-template" class="btn product-form__cart-submit product-form__cart-submit--small" style="display:inline; padding:10px; background-color:#d85e00;">
+      <span id="AddToCartText-product-template"style="display:inline; padding:10px; background-color:#d85e00;" >
+
+        <input type="submit" id="add-to-cart" class="btn_orange" name="add" value="REVIEW ORDER" style="display:inline; padding:10px; background-color:#d85e00;">
+        <input type="hidden" name="return_to" value="/cart" />
+
+
+
+
+      </span>
+      </button></a>
+  </div>
+
+
+</div>
+
+{% endpaginate %}
+
+{% schema %}
+{
+"name": "Collection pages",
+"settings": [
+{
+"type": "select",
+"id": "layout",
+"label": "Layout",
+"default": "grid",
+"options": [
+{
+"value": "grid",
+"label": "Grid"
+},
+{
+"value": "list",
+"label": "List"
+}
+]
+},
+{
+"type": "select",
+"id": "grid",
+"label": "Products per row (grid only)",
+"default": "4",
+"options": [
+{
+"value": "2",
+"label": "2"
+},
+{
+"value": "3",
+"label": "3"
+},
+{
+"value": "4",
+"label": "4"
+},
+{
+"value": "5",
+"label": "5"
+}
+]
+},
+{
+"type": "select",
+"id": "rows",
+"label": "Rows per page (grid only)",
+"default": "2",
+"options": [
+{
+"value": "2",
+"label": "2"
+},
+{
+"value": "3",
+"label": "3"
+},
+{
+"value": "4",
+"label": "4"
+},
+{
+"value": "5",
+"label": "5"
+},
+{
+"value": "6",
+"label": "6"
+},
+{
+"value": "7",
+"label": "7"
+},
+{
+"value": "8",
+"label": "8"
+},
+{
+"value": "9",
+"label": "9"
+}
+]
+},
+{
+"type": "checkbox",
+"id": "show_collection_image",
+"label": "Show collection image",
+"default": true
+},
+{
+"type": "checkbox",
+"id": "show_vendor",
+"label": "Show product vendors",
+"default": false
+},
+{
+"type": "checkbox",
+"id": "sort_enable",
+"label": "Enable sorting",
+"default": true
+},
+{
+"type": "checkbox",
+"id": "tags_enable",
+"label": "Enable tag filtering",
+"default": true
+}
+]
+}
+{% endschema %}
+

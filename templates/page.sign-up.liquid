@@ -1,0 +1,980 @@
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' />
+
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.1.0/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.1.0/mapbox-gl-geocoder.css' type='text/css' />
+
+<script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--full">
+      <div class="section-header text-center">
+        <h1>Let's Get Started!</h1>
+        <p>Clean ingredients, chef-prepared meals, delivered weekly.</p>
+      </div>
+
+      <div class="accordion">
+
+        <form id="customer-signup" action="" method="get">  
+
+          <input type="hidden" name="shopify_customer_id" id="shopify_customer_id" value="">
+          <input type="hidden" name="address1" id="address1" value="">
+          <input type="hidden" name="city" id="city" value="">
+          <input type="hidden" name="state" id="state" value="">
+          <input type="hidden" name="country" id="country" value="">
+          <input type="hidden" name="postalcode" id="postalcode" value="">
+
+          <div id="accordion-section-1" class="accordion-section">
+            <div class="accordion-section-title active" href="#accordion-1">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span>  STEP 1: ARE YOU IN OUR DELIVERY ZONE?</span>
+            </div>
+            <div id="accordion-1" class="accordion-section-content open" style="display:block;">
+
+              <div class="grid">
+
+                <!-- map embed -->
+                <div class="grid__item medium-up--one-half">
+                  <div id="map"></div>
+
+                </div>
+                <div class="grid__item medium-up--one-half">
+
+                  <p>First, let's confirm we deliver to your address. We deliver to a 12-mile radius from TILL Kitchen (9633 Prominent Point, Colorado Springs CO, 80924) or you can pick up your order at TILL Kitchen each Tuesday.</p>
+                  <hr/>
+
+                  <div id="address-place" style="display:none;"></div>
+
+                  <div id='distance' class='distance-container accordion-section-cta'>  
+                    <div id="address-cta">
+                      <p>Please enter your address in the map search box to make sure you are in our delivery zone.</p>
+                    </div>
+                    <div id="delivery" style="display:none;">
+                      <p>
+                        Woo hoo! You are in our delivery zone. Let's get you signed up! 
+                      </p>
+                      <div class="btn accordion-section-btn section-1-next" href='#accordion-section-2'>Next</div>
+                    </div>
+                    <div id="pick-up" style="display:none;">
+                      <p style="color: red;">Drats, you live outside our delivery zone. Don't fret, you can still sign up and pickup your TILLIVERY order every Tuesday at TILL Kitchen after 5 p.m.</p>
+                      <div class="btn accordion-section-btn section-1-next" href='#accordion-section-2'>Next</div>
+                    </div>                      
+                  </div>
+                  <p><em>*Unfortunately we are not able to deliver to any United States of America military bases.</em></p>
+                  <div id="output"></div>
+                </div>
+
+              </div>
+
+            </div><!--end .accordion-section-content-->
+          </div><!--end .accordion-section-->
+
+          <div id="accordion-section-2" class="accordion-section">
+            <div class="accordion-section-title" href="#accordion-2">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span>  STEP 2: CONTACT INFORMATION</span>
+            </div>
+            <div id="accordion-2" class="accordion-section-content">
+              <div class="form-vertical">
+
+
+                <label for="FirstName">First Name</label>
+                <input type="text" name="first_name" id="FirstName" required>
+
+                <label for="LastName">Last Name</label>
+                <input type="text" name="last_name" id="LastName" required>
+
+                <label for="Email">Email</label>
+                <input type="email" name="email" id="Email" autocorrect="off" autocapitalize="off">
+
+                <label for="Email">Confirm your Email</label>
+                <input type="email" name="email_confirm" id="ConfirmEmail" autocorrect="off" autocapitalize="off">
+
+                <label for="Phone">Phone</label>
+                <input type="tel" name="phone" id="Phone" class="">
+
+                <label for="CreatePassword">Password</label>
+                <input type="password" name="password_create" id="CreatePassword" required>
+
+                <label for="PasswordConfirm">Confirm Your Password</label>
+                <input type="password" name="password_confirm" id="ConfirmPassword" required>
+
+                <label for="Referral">How Did you Hear About Us?</label>
+                <select type="text" name="referral" id="Referral" onchange="showOther()" required>
+                  <option disabled selected value> -- select an option -- </option>
+                  <option value="Magazine">Magazine</option>
+                  <option value="Tasting Event">Tasting Event</option>
+                  <option value="Social Media">Social Media</option>
+                  <option value="Doorstep Flyer">Doorstep Flyer</option>
+                  <option value="TILL Kitchen">TILL Kitchen</option>
+                  <option value="Email">Email</option>
+                  <option value="Local Buzz">Local Buzz</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <input type="text" name="referral_other" id="other-referrer" disabled>
+
+                <!-- Used to display form errors -->
+                <div id="customer-errors" role="alert" class="error-message"></div>
+
+                <div class="btn accordion-section-btn section-2-next" href='#accordion-section-3'>Next</div>
+
+              </div>
+            </div><!--end .accordion-section-content-->
+          </div><!--end .accordion-section-->
+
+          <div id="accordion-section-3" class="accordion-section">
+            <div class="accordion-section-title" href="#accordion-3">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span>  STEP 3: TERMS &amp; CONDITIONS</span>
+            </div>
+            <div id="accordion-3" class="accordion-section-content">
+              <p><strong>TILLIVERY Terms and Conditions:</strong></p>
+              <ol>
+                <li>As a TILLIVERY customer, you are agreeing to a 4-delivery commitment.</li>
+                <li>Upon signing up, your service will begin immediately and billing will begin immediately. If you do not place an order, you will receive our Chef’s Choice and be charged.</li>
+                <li>The minimum weekly order is $49.99 and billing will begin this coming Thursday.</li>
+                <li>A 100% refundable* cooler deposit of $60 will be charged with your first order. *Note: To receive a 100% refund, the cooler must be returned to TILL Kitchen, otherwise we will pick the cooler up and you will receive a $50 refund.</li>
+                <li>If a skip is not placed before Wednesday (for the following week’s delivery) you will be charged.</li>
+                <li>You are agreeing to a weekly subscription charge.</li>
+                <li>In the case of poor weather conditions, deliveries will be delayed until road conditions are safe, typically a one day delay.</li>
+              </ol>
+
+              <div class="form-vertical">
+
+                <input type="checkbox" name="terms" value="agree" id="terms" required />
+                <label for="terms">I agree to the Terms &amp; Conditions</label>
+
+                <!-- Used to display form errors -->
+                <div id="customer-errors" role="alert" class="error-message"></div>
+
+                <input type="submit" class="accordion-section-btn btn" href='#accordion-section-4' value="Next"/>
+
+              </div>
+            </div><!--end .accordion-section-content-->
+          </div><!--end .accordion-section-->
+
+        </form>
+
+        <div id="accordion-section-4" class="accordion-section">
+          <div class="accordion-section-title" href="#accordion-4">
+            <i class="fa fa-square-o" aria-hidden="true"></i>
+            <span>  STEP 4: PAYMENT INFORMATION</span>
+          </div>
+          <div id="accordion-4" class="accordion-section-content">
+
+            <form id="customer-account-edit-payment" action="#" method="get">
+
+              <input type="hidden" name="shop" value="tillivery.myshopify.com">
+              <input type="hidden" name="shopify_customer_id" id="shopify_customer_id2" value="">
+
+              <div>
+                <div>
+                  <!--                     <h2>Add a Payment Method</h2> -->
+                  <p>TILLIVERY is a monthly subscription service, billed weekly. On your first order, you will see a 100% refundable $60 deposit for the premium cooler and ice packs we provide to keep your delivery nice &amp; chilly!</p>
+                </div>
+                <div class="grid">
+                  <div class="grid__item medium-up--one-half">
+
+                    <div class="form-vertical">
+
+                      {% comment %} Stored payment metadata {% endcomment %}
+
+                      <!--           Commenting this out for testing -->
+                      <div style="display: none;">
+                        <!--           <div> -->
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="credit-card-provider">Credit Card Provider</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="credit_card_provider" id="credit_card_provider" value="{{customer.metafields.customer_attribute['credit-card-provider']}}"  placeholder="Credit Card Provider"/>
+                        </div>
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="expiration-month">Expiration Month</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="expiration_month" id="expiration_month" value="{{customer.metafields.customer_attribute['expiration-month']}}"  placeholder="Expiration Month"/>
+                        </div>
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="expiration-year">Expiration Year</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="expiration_year" id="expiration_year" value="{{customer.metafields.customer_attribute['expiration-year']}}"  placeholder="Expiration Year"/>
+                        </div>
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="last-four">Last Four</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="last_four" id="last_four" value="{{customer.metafields.customer_attribute['last-four']}}"  placeholder="Last 4"/>
+                        </div>
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="stripe_token">Stripe Token</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="stripe_token" id="stripe_token" value="{{customer.metafields.customer_attribute['stripe-token']}}"  placeholder="Stripe Token"/>
+                        </div>
+
+                        <div class="clearfix large_form ca-attr ca-account">
+                          <label class="ca-label ca-static-label label" for="stripe_customer">Stripe Customer ID</label>
+                          <input class="ca-value ca-input ca-text text" size="30" type="text" name="stripe_customer_id" id="stripe_customer_id" value="{{customer.metafields.customer_attribute['stripe-customer']}}"  placeholder="Stripe Customer ID"/>
+                        </div>
+
+                      </div>
+                      {% comment %} END Stored payment metadata {% endcomment %}
+
+                      {% comment %} START Stripe Elements Embed {% endcomment %}
+                      <div class="clearfix large_form ca-attr ca-account">
+                        <form action="/charge" method="post" id="payment-form">
+                          <div class="form-row">
+                            <label for="card-element">
+                              Add/Edit Your Credit or Debit Card
+                            </label>
+                            <div class="group">
+                              <div id="card-element">
+                                <!-- a Stripe Element will be inserted here. -->
+                              </div>
+                            </div>
+
+                            <!-- Used to display form errors -->
+                            <div id="card-errors" role="alert" class="error-message"></div>
+                          </div>
+                        </form>
+                      </div>
+                      {% comment %} END Stripe Elements Embed {% endcomment %}
+
+                      <p style="margin-top: 20px;">
+                        <input type="submit" class="btn" type="submit" value="Save Card" />
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div><!--end .accordion-section-content-->
+        </div><!--end .accordion-section-->
+
+        <div id="accordion-section-5" class="accordion-section">
+          <div class="accordion-section-title" href="#accordion-5">
+            <i class="fa fa-square-o" aria-hidden="true"></i>
+            <span>  STEP 5: Place Your Weekly TILLIVERY Order</span>
+          </div>
+          <div id="accordion-5" class="accordion-section-content">
+            {% capture day %}{{ 'now' | date: '%A' }}{% endcapture %}
+            {% if day == 'Sunday' or day == 'Monday' or day == 'Tuesday' or day == 'Wednesday' %}
+            <div id="store-open" class="text-center">
+              <h4><i class="fa fa-check-circle" style="color: #8ec430;"></i> Success! You're all set.</h4>
+              <p>We can't wait to start making your life easier&mdash;and more delicious!</p>
+              <a class="btn" href="/products/thismonthsmenu">Place Your Order</a>
+            </div>
+            {% else %}
+            <div id="store-closed" class="text-center">
+              <h4><i class="fa fa-check-circle" style="color: #8ec430;"></i> Success! You're all set.</h4>
+              <p>Orders for this week are currently closed. Each Sunday, we'll send an email inviting you to view our updated weekly menu and place your order. You can shop for the week anytime before Wednesday at midnight. If you miss the order deadline, we will be happy to deliver our Chef's Choice meal of the week.</p>
+              <p>We can't wait to start making your life easier&mdash;and more delicious!</p>
+              <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/howitworks.png?15849925145564782546" width="400px" style="padding-top: 35px;" alt="How It Works">
+              <div class="grid">
+                <div class="grid__item medium-up--one-third">
+                  <div class="icon-container">
+                    <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/email.svg?16215378260770839050" class="sign-up-icon truck" alt="Ordering Opens">
+                  </div>
+                  <h4>Ordering Opens</h4>
+                  <p>Each Sunday, the store opens for weekly ordering. We'll send an email inviting you to view our updated weekly menu and place your order.</p>
+                </div>
+                <div class="grid__item medium-up--one-third"> 
+                  <div class="icon-container">
+                    <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/basket.svg?8960140311234738113" class="sign-up-icon" alt="Select">
+                  </div>
+                  <h4>Choose Your Meal</h4>
+                  <p>Please customize your meal order by Wednesday at midnight. Choose 2 entrées, a soup, a salad &amp; a sourdough bread for a minimum of $49.99/week.</p>
+                </div>
+                <div class="grid__item medium-up--one-third">  
+                  <div class="icon-container">
+                    <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/truck.svg?10100985431547632997" class="sign-up-icon truck" alt="Deliver">
+                  </div>
+                  <h4>Fresh Food Delivered</h4>
+                  <p>We deliver on Tuesdays or Wednesdays. Our driver will put your fresh food in a cooler we provide to keep food chilled for up to 12 hours. </p>
+                </div>                  
+              </div>
+            </div>
+            {% endif %}
+          </div><!--end .accordion-section-content-->
+        </div><!--end .accordion-section-->
+
+      </div><!--end .accordion-->
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+
+  /*----- Accordion -----*/
+  .accordion, .accordion * {
+    -webkit-box-sizing:border-box; 
+    -moz-box-sizing:border-box; 
+    box-sizing:border-box;
+  }
+
+  .accordion {
+    overflow:hidden;
+    box-shadow:0px 1px 3px rgba(0,0,0,0.25);
+    border-radius:3px;
+    background:#f7f7f7;
+  }
+
+  /*----- Section Titles -----*/
+  .accordion-section-title {
+    width:100%;
+    padding:15px;
+    display:inline-block;
+    border-bottom: 1px solid white;
+    background: #233a49;
+    transition: all linear 0.15s;
+    /* Type */
+    font-size:1.200em;
+    text-shadow:0px 1px 0px #1a1a1a;
+    color:#fff;
+    text-transform: uppercase;
+  }
+
+  /*   .accordion-section-title.active, .accordion-section-title:hover {
+  background:#233a49;
+  /* Type */
+  text-decoration:none;
+  } */
+
+  #accordion-section-4 .accordion-section-title {
+    border-bottom:none;
+  }
+
+  /*----- Section Content -----*/
+  .accordion-section-content {
+    padding: 30px 20px;
+    display:none;
+  }
+
+  /*----- Section Content -----*/
+  .accordion-section-cta {
+    font-weight:600;
+  }
+
+  /*----- Next Button ------*/
+  .accordion-section-btn {
+    display: block;
+    margin: 0 0 20px 0;
+  }
+
+  #map {
+    width: 100%;
+    height: 500px;
+  }
+  .mapboxgl-marker {
+    height: 16px;
+    width: 16px;
+    background-color: #d85e00;
+    border: 3px solid white;
+    border-radius: 50%;
+  }
+
+  hr {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+
+  ol {
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+
+  ol li {
+    list-style-type: decimal;
+  }
+
+  .error-message {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: red;
+    text-transform: capitalize;
+  }
+
+  p:last-child {
+    margin: 0 0 19.44444px;
+  }
+
+  .ca-attr.ca-account {
+    margin-top: 26px;
+  }
+
+  .group {
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+
+  label {
+    position: relative;
+    font-weight: 300;
+    height: 30px;
+    display: block;
+  }
+
+  .group label:not(:last-child) {
+    border-bottom: 1px solid #F0F5FA;
+  }
+
+  label > span {
+    width: 20%;
+    text-align: right;
+    float: left;
+  }
+
+  .field {
+    background: transparent;
+    font-weight: 300;
+    border: 0;
+    color: #31325F;
+    outline: none;
+    padding-right: 10px;
+    padding-left: 10px;
+    cursor: text;
+    width: 70%;
+    height: 40px;
+    float: right;
+  }
+
+  #card-element  {
+    padding-left: 10px;
+  }
+
+  .field::-webkit-input-placeholder { color: #CFD7E0; }
+  .field::-moz-placeholder { color: #CFD7E0; }
+  .field:-ms-input-placeholder { color: #CFD7E0; }  
+
+</style>
+
+<script>
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  function showOther() {
+    var referral_value = $('#Referral').val();
+    console.log(referral_value);
+    if (referral_value == 'Other') {
+      $('#other-referrer').prop( "disabled", false );
+    }
+    else {
+      $('#other-referrer').prop( "disabled", true );
+    }
+  };
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+  * Log the customer in with their email and password.
+  */
+
+  function login(email, password) {  
+    var data = {
+      'customer[email]': email,
+      'customer[password]': password,
+      form_type: 'customer_login',
+      utf8: '✓'
+    };
+
+    var promise = $.ajax({
+      url: '/account/login',
+      method: 'post',
+      data: data,
+      dataType: 'html',
+      success: function(request){
+        console.log(request);
+      },
+      error: function(request, status, e) {
+        console.log(request);
+        console.log(status);
+        console.log(e);
+      }
+    });
+
+    console.log(promise);
+
+    return promise;
+  }
+
+  /*
+  * Get the `checkout_url` from the URL query parameter, if it exists.
+  * (It only ever exists on the /account/login page)
+  */
+  function getCheckoutUrl() {  
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    return getParameterByName('checkout_url');
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // JS to manage accordion
+
+  $(document).ready(function() {
+
+    function close_accordion_section() {
+      $('.accordion .accordion-section-title').removeClass('active');
+      $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
+    }
+
+    $('.section-1-next').click(function(e) {
+
+      close_accordion_section();
+
+      var thisSection = e.target.closest('.accordion-section');
+      console.log(thisSection);
+      var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+      var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+
+      thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+
+      var targetSection = $(this).attr('href');
+
+      $('.accordion ' + targetSection + ' .accordion-section-title').addClass('active');
+      $('.accordion ' + targetSection + ' .accordion-section-content').slideDown(300).addClass('open');
+
+    });
+
+    $('.section-2-next').click(function(e) {
+
+      close_accordion_section();
+
+      var thisSection = e.target.closest('.accordion-section');
+      console.log(thisSection);
+      var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+      var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+
+      thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+
+      var currentAttrValue = $(this).attr('href');
+      console.log(currentAttrValue);
+
+      $('.accordion ' + currentAttrValue + ' .accordion-section-title').addClass('active');
+      $('.accordion ' + currentAttrValue + ' .accordion-section-content').slideDown(300).addClass('open');
+
+    });
+
+    //     $('#section-3-next').click(function(e) {
+
+    //       close_accordion_section();
+
+    //       var thisSection = e.target.closest('.accordion-section');
+    //       console.log(thisSection);
+    //       var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+    //       var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+
+    //       thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+
+    //       var currentAttrValue = $(this).attr('href');
+    //       console.log(currentAttrValue);
+
+    //       $('.accordion ' + currentAttrValue + ' .accordion-section-title').addClass('active');
+    //       $('.accordion ' + currentAttrValue + ' .accordion-section-content').slideDown(300).addClass('open');
+
+    //     });    
+
+
+    // When customer submits contact info submit form to API to be created
+    var customerform = document.getElementById('customer-signup');
+    customerform.addEventListener('submit', function(event) {
+
+      event.preventDefault();
+
+      var submitbutton = $(this).find('input[type=submit]');
+      submitbutton.attr('disabled',true);
+
+
+      $.ajax({
+        url: 'https://subscribery.herokuapp.com/api/shopifycustomer/',
+        type: 'post',
+        data: $(event.target).serialize(),
+        success: function(request) {
+          console.log(request);
+          $('#shopify_customer_id').attr('value', request.shopify_customer_id);
+          $('#shopify_customer_id2').attr('value', request.shopify_customer_id);
+          close_accordion_section();
+
+          var thisSection = $(submitbutton).closest('.accordion-section');
+          console.log(thisSection);
+          var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+          var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+          thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+
+          var email = $('#Email').val();
+          var password = $('#CreatePassword').val(); 
+
+          /*
+              * Try to login, check the login credentials, and then redirect if required.
+              */
+          login(email, password).done(function (html) {  
+            if (html.indexOf('Invalid login credentials') !== -1) {
+              // invalid password - show a message to the user
+            } else {
+
+              // All good! Let's redirect if required
+              var checkoutUrl = getCheckoutUrl();
+              if (checkoutUrl) {
+                window.location.href = checkoutUrl;
+              } else {
+                // don't need to redirect, do what you like! 
+              }
+
+            }
+          });
+
+          $('.accordion ' + '#accordion-section-4' + ' .accordion-section-title').addClass('active');
+          $('.accordion ' + '#accordion-section-4' + ' .accordion-section-content').slideDown(300).addClass('open');
+
+        },
+        error: function(request, status, e) {
+
+          submitbutton.removeAttr("disabled");
+
+          console.log(e);
+          result = jQuery.parseJSON(request.responseText);
+          console.log(result);
+          var errorElement = document.getElementById('customer-errors');
+          var message = 'An Error has Occured';
+          if (result.hasOwnProperty('error')) {
+            var message = result.error;
+          }
+          errorElement.textContent = message;
+        }
+      });
+
+    });
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    var style = {
+      base: {
+        // Add your base input styles here. For example:
+        fontSize: '16px',
+        lineHeight: '24px',
+        lineHeight: '40px'
+      }
+    };
+
+    // Create an instance of the card Element
+    var card = elements.create('card', {
+      hidePostalCode: true,
+      style: style
+    });
+
+    // Add an instance of the card Element into the `card-element` <div>
+    card.mount('#card-element');
+
+    card.addEventListener('change', function(event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }              
+    });
+
+    // Create a token or display an error when the form is submitted.
+    var form = document.getElementById('customer-account-edit-payment');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      stripe.createToken(card).then(function(result) {
+        if (result.error) {
+          // Inform the user if there was an error
+          var errorElement = document.getElementById('card-errors');
+          errorElement.textContent = result.error.message;
+        } else {
+          // Send the token to your server
+          stripeTokenHandler(result.token);
+        }
+      });
+    });
+
+    function stripeTokenHandler(token) {
+      // Insert the token ID into the form so it gets submitted to the server
+      var form = document.getElementById('customer-account-edit-payment');
+
+      var stripeInput = document.getElementById('stripe_token');
+      stripeInput.setAttribute('value', token.id);
+
+      var stripeInput = document.getElementById('credit_card_provider');
+      stripeInput.setAttribute('value', token.card['brand']);
+
+      var stripeInput = document.getElementById('expiration_month');
+      stripeInput.setAttribute('value', token.card['exp_month']);
+
+      var stripeInput = document.getElementById('expiration_year');
+      stripeInput.setAttribute('value', token.card['exp_year']);
+
+      var stripeInput = document.getElementById('last_four');
+      stripeInput.setAttribute('value', token.card['last4']);
+
+      formpost(form);
+    };
+
+    // Submit the form data and move to next section
+
+    function formpost (form) {
+      $.ajax({
+        url: 'https://subscribery.herokuapp.com/api/customer/',
+        type: 'post',
+        data: $(form).serialize(),
+        success: function(request){
+
+          console.log(request);
+          stripe_customer_id = request.id;
+          close_accordion_section();
+
+          var thisSection = $('#accordion-section-4');
+          console.log(thisSection);
+          var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+          var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+
+          thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+
+          {% capture day %}{{ 'now' | date: '%A' }}{% endcapture %}
+          {% if day != 'Sunday' and day != 'Monday' and day != 'Tuesday' and day != 'Wednesday' %}
+          var thisSection = $('#accordion-section-5');
+          var thisSectionTitle = $(thisSection).find('.accordion-section-title');
+          var thisSectionTitleCheck = $(thisSectionTitle).find('i');
+          thisSectionTitleCheck.removeClass('fa-square-o').addClass('fa-check-square-o');
+          {% endif %}
+
+          $('.accordion ' + '#accordion-section-5' + ' .accordion-section-title').addClass('active');
+          $('.accordion ' + '#accordion-section-5' + ' .accordion-section-content').slideDown(300).addClass('open');
+
+        },
+        error: function(request, status, e) {
+          console.log(e);
+          result = jQuery.parseJSON(request.responseText);
+          console.log(result);
+          var errorElement = document.getElementById('card-errors');
+          var message = 'An Error has Occured';
+          if (result.hasOwnProperty('error')) {
+            var message = result.error.message;
+          }
+          errorElement.textContent = message;
+        }
+      });
+    };
+
+  });
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Define and Load Map
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYnJpZ2h0YmxhY2tib3giLCJhIjoiY2oya2xoOHdqMDBldTMybmlkNjVta3B5MCJ9.hUOg7G6smvENSEvi9mC5jg';
+
+  var restaurant = {
+    lat: 38.9704705,
+    lng: -104.74397
+  };
+
+  var service_radius_km = 19.3121;
+
+  var createGeoJSONCircle = function(center, radiusInKm, points) {
+    if(!points) points = 64;
+
+    var coords = {
+      latitude: center[1],
+      longitude: center[0]
+    };
+
+    var km = radiusInKm;
+
+    var ret = [];
+    var distanceX = km/(111.320*Math.cos(coords.latitude*Math.PI/180));
+    var distanceY = km/110.574;
+
+    var theta, x, y;
+    for(var i=0; i<points; i++) {
+      theta = (i/points)*(2*Math.PI);
+      x = distanceX*Math.cos(theta);
+      y = distanceY*Math.sin(theta);
+
+      ret.push([coords.longitude+x, coords.latitude+y]);
+    }
+    ret.push(ret[0]);
+
+    return {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [ret]
+          }
+        }]
+      }
+    };
+  };
+
+  var map = new mapboxgl.Map({
+    container: 'map', // HTML container id
+    style: 'mapbox://styles/mapbox/streets-v9', // style URL
+    center: restaurant, // starting position as [lng, lat]
+    zoom: 9
+  });
+
+  var distanceContainer = document.getElementById('distance');
+  var delivery = document.getElementById('delivery');
+  var pickup = document.getElementById('pick-up');
+  var cta = document.getElementById('address-cta');
+
+  var el = document.createElement('div');
+  var marker = new mapboxgl.Marker(el,{offset: [-8, -8]})
+  .setLngLat(restaurant)
+  .addTo(map);
+
+  map.resize();
+
+  // Add Geocoder
+  var geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+  });
+
+  map.addControl(geocoder);
+
+  // After the map style has loaded on the page, add a source layer and default
+  // styling for a single point.
+  map.on('load', function() {
+
+    // GeoJSON object to hold our measurement features
+    var geojson = {
+      "type": "FeatureCollection",
+      "features": []
+    };
+
+    map.addSource('geojson', {
+      "type": "geojson",
+      "data": geojson
+    });
+
+    // Draw Service Area on Map
+    map.addSource("polygon", createGeoJSONCircle([restaurant.lng,restaurant.lat], service_radius_km));
+    map.addLayer({
+      "id": "polygon",
+      "type": "fill",
+      "source": "polygon",
+      "layout": {},
+      "paint": {
+        "fill-color": "#5b94c6",
+        "fill-opacity": 0.35
+      }
+    });
+
+    map.addSource('single-point', {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": []
+      }
+    });
+
+    map.addLayer({
+      "id": "point",
+      "source": "single-point",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 10,
+        "circle-color": "#007cbf"
+      }
+    });
+
+    // Listen for the `geocoder.input` event that is triggered when a user
+    //makes a selection and add a symbol that matches the result.
+    geocoder.on('result', function(ev) {
+
+      // Used to draw a line between points
+      var line = {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [restaurant.lng, restaurant.lat]
+          ]
+        }
+      };
+
+      var result = ev.result;
+      var place = result.place_name;
+
+      console.log(result);
+
+      $('#address1').attr('value', result.address + ' ' + result.text);
+
+      var attributes = result.context;
+      $(attributes).each( function(index, item) {
+        var context = item;
+        console.log(context);
+        if ((context.id).indexOf('postcode') >= 0) {
+          $('#postalcode').attr('value', context.text);
+        }        
+        else if ((context.id).indexOf('place') >= 0) {
+          $('#city').attr('value', context.text);
+        }        
+        else if ((context.id).indexOf('region') >= 0) {
+          $('#state').attr('value', context.text);
+        }        
+        else if ((context.id).indexOf('country') >= 0) {
+          $('#country').attr('value', context.text);
+        }
+      }
+                        );
+
+      var geometry = result.geometry;
+      line.geometry.coordinates.push(geometry.coordinates);
+      geojson.features.push(line);
+      map.getSource('single-point').setData(geometry);  
+
+      if (place) {
+        var addressPlace = document.getElementById('address-place');
+        addressPlace.innerHTML = '<p>' + place + '</p><hr/>';
+        addressPlace.style.display = '';
+      }
+
+      // Populate the distanceContainer with total distance
+      var distance_km = turf.lineDistance(line);
+
+      if (distance_km <= service_radius_km) {
+        cta.style.display = 'none';
+        delivery.style.display = '';
+        pickup.style.display = 'none';
+      }
+      else if (distance_km > service_radius_km) {
+        cta.style.display = 'none';
+        delivery.style.display = 'none';
+        pickup.style.display = '';
+      }
+
+      var bbox = turf.extent(geojson);
+      map.fitBounds(bbox, {padding: 50});
+
+    });
+
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+</script>

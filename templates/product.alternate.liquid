@@ -1,0 +1,364 @@
+
+<div class="page-container drawer-page-content" id="PageContainer">
+
+  <div id="shopify-section-1492143466948" class="shopify-section index-section index-section--flush"><div class="hero hero--large hero__overlay" style="background-image: url(https://cdn.shopify.com/s/files/1/1837/8723/files/Pork-Green-Chili-Gnocci.jpg?8704105804309041259); background-position: center center;">
+    <div class="hero__inner">
+      <div class="page-width text-center">
+
+        <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/onthemenu.png?477706137455052865" width="500px" style="margin-top:40px;">
+        {% if customer %}
+        <div class="rte-setting mega-subtitle">
+          <p>Get family-style entrees, soup, salad &amp; signature sourdough bread delivered to you each week for a minimum order of $49.99/week!<br>
+          </p>
+          <ul>
+            <li class="material-icons" style="letter-spacing:-17px;">star_ratestar_ratestar_ratestar_rate</li>
+          </ul>
+        </div>
+       {% else %}
+       {% endif %} 
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <form id="weekly-menu" action="/collections/add-ons" method="get" class="product-form product-form-product-template" data-section="product-template">
+
+    <div style="padding: 0 50px"> 
+      <div class="grid">
+
+      <label class="spb-productdescfont spb-productdesctextcolor" style="text-align:center;"></label>
+
+      <br>
+      {% capture day %}{{ 'now' | date: '%A' }}{% endcapture %}
+      {% if customer %}
+        
+        {% if day == 'Sunday' or day =='Monday' or day == 'Tuesday' or day == 'Wednesday' %}
+      <div style="text-align:left; color:#ccc; width: 420px; margin: 0 auto;">
+        <span class="material-icons" style="margin-right:10px;">done</span>
+        <strong>ORDER BY</strong> Oct. 11 | <strong>DELIVERED</strong> Oct. 17-18
+      </div>
+
+      <div style="text-align:left; width: 420px; margin: 0 auto;">
+        <span class="material-icons" style="margin-right:10px;">schedule </span>
+        <strong>ORDER BY</strong> Oct. 18 | <strong>DELIVERED</strong> Oct. 24-25
+      </div>
+
+      <div style="text-align:left; color:#ccc; width: 420px; margin: 0 auto;">
+        <span class="material-icons" style="margin-right:10px;">schedule </span>
+        <strong>ORDER BY</strong> Oct. 25 | <strong>DELIVERED</strong> Oct. 31-Nov.1
+      </div>
+        {% endif %}
+      {% if day == 'Thursday' or day =='Friday' or day == 'Saturday'%}
+        <div class="text-center">
+          <h1>Chef is busy cooking, the menu will re-open Sunday morning.</h1>
+          {% endif %}
+       {% else %}
+        
+        
+        
+        
+      <h1 style="text-align:center;">What We're Cooking Now</h1> 
+      <p style="text-align:center; color:#000;">Get family-style entrees, soup, salad &amp; signature sourdough bread delivered to you each week for just $49.99!</p>
+      <p align="center">To select your weekly menu items, you must first <a href="https://tillivery.com/account/login">LOG IN or </a><a href="https://tillivery.com/pages/waitlist">SIGN UP.</a></p>
+
+
+		{% endif %}
+
+      <div style="height: 50px;"></div>
+
+      <main class="main-content" id="MainContent" role="main">
+
+        <div style="height:30px;"></div>
+
+        
+
+
+        {% assign collection = collections['soups'] %}
+		{% if customer %}
+        <div style="margin-bottom:40px;text-align:center; border-radius:10px;font-size:1.5em;padding:10px 0px 20px 0px; "><label class="spb-productdescfont spb-productdesctextcolor" style="color:#d9670e;">SELECT YOUR SOUP</label>
+          <p style="font-size:15px">4 servings</p>
+          <span>
+            <div class="spb-select">
+              <select data-selector="variant" class="spb-productdescfont spb-productoptiontextcolor spb-productoptionbackground" required name="properties[SOUP]">
+                <option value="" disabled selected>Select One</option>
+                {% for product in collection.products limit:4 %}
+                {% assign variant = product.selected_or_first_available_variant %}
+                  <option value="{{ variant.id }}">{{ product.title }} </option>
+                {% endfor %}
+              </select>
+            </div>
+          </span>
+        </div>
+		{% else %}
+        {% endif %}
+
+        {% for product in collection.products limit:4 %}
+		{% assign variant = product.selected_or_first_available_variant %}
+
+        <div class="grid__item medium-up--one-third">
+          <div id="FeaturedImageZoom-product-template" class="product-single__photo product-single__photo--has-thumbnails" data-zoom="{{ product | img_url: '1024x1024', scale: 2 }}" style="position: relative; overflow: hidden;">
+            <img src="{{ product | img_url: '360x240' }}" alt="Tillivery Box" id="FeaturedImage-product-template" class="product-featured-img js-zoom-enabled">
+            <p class="menu_title">{{ product.title }}</p>
+            <p>{{ product.description }}</p>
+          </div>
+          <div style="text-align:center;">
+            {% if product.tags contains 'Vegetarian' %}
+            <div class="vegetarian"></div>
+            {% endif %}
+            {% if product.tags contains 'Gluten Free' %}
+            <div class="gluten_free"></div>
+            {% endif %}
+            {% if product.tags contains 'Vegan' %}
+            <div class="vegan"></div>
+            {% endif %}   
+            {% if product.tags contains 'Dairy Free' %}
+            <div class="dairy_free"></div>
+            {% endif %}             
+          </div>          
+          <div class="tooltip2">Ingredients
+            <span class="tooltiptext2">{{ product.metafields.c_f.product_ingredients }}</span>
+          </div>
+        </div>  
+        {% assign divisible_by_four = forloop.index | modulo: 4 %}
+        {% if divisible_by_four == 0 or forloop.last == true %}
+        <div class="clearfix"></div>
+        {% endif %}        
+        {% endfor %}
+
+        {% assign collection = collections['salads'] %}
+		{% if customer %}
+        <div style="margin-bottom:40px;text-align:center; border-radius:10px;font-size:1.5em;padding:10px 0px 20px 0px; "><label class="spb-productdescfont spb-productdesctextcolor" style="color:#d9670e;">SELECT YOUR SALAD</label>
+          <p style="font-size:15px">4 servings. All dressings on the side.</p>
+          <span>
+            <div class="spb-select">
+              <select data-selector="variant" class="spb-productdescfont spb-productoptiontextcolor spb-productoptionbackground" required name="properties[SALAD]">
+                <option value="" disabled selected>Select One</option>
+                {% for product in collection.products limit:4 %}
+                  {% assign variant = product.selected_or_first_available_variant %}
+                  <option value="{{variant.id}}">{{ product.title }} </option>
+                {% endfor %}
+              </select>
+            </div>
+          </span>
+        </div>
+		{% else %}
+        {% endif %}
+
+        {% for product in collection.products limit:4 %}
+		{% assign variant = product.selected_or_first_available_variant %}
+
+        <div class="grid__item medium-up--one-third">
+          <div id="FeaturedImageZoom-product-template" class="product-single__photo product-single__photo--has-thumbnails" data-zoom="{{ product | img_url: '1024x1024', scale: 2 }}" style="position: relative; overflow: hidden;">
+          <img src="{{ product | img_url: '360x240' }}" alt="Tillivery Box" id="FeaturedImage-product-template" class="product-featured-img js-zoom-enabled">
+          <p class="menu_title">{{ product.title }}</p>
+          <p>{{ product.description }}</p>
+
+          </div>
+          <div style="text-align:center;">
+            {% if product.tags contains 'Vegetarian' %}
+            <div class="vegetarian"></div>
+            {% endif %}
+            {% if product.tags contains 'Gluten Free' %}
+            <div class="gluten_free"></div>
+            {% endif %}
+            {% if product.tags contains 'Vegan' %}
+            <div class="vegan"></div>
+            {% endif %}  
+            {% if product.tags contains 'Dairy Free' %}
+            <div class="dairy_free"></div>
+            {% endif %}             
+          </div>          
+          <div class="tooltip2">Ingredients
+            <span class="tooltiptext2">{{ product.metafields.c_f.product_ingredients }}</span>
+          </div>
+        </div>
+        {% assign divisible_by_four = forloop.index | modulo: 4 %}
+        {% if divisible_by_four == 0 or forloop.last == true %}
+        <div class="clearfix"></div>
+        {% endif %}          
+        {% endfor %} 
+        
+        {% assign collection = collections['entrees'] %}
+        {% if customer %}
+        <div style="margin-bottom:40px;text-align:center; border-radius:10px;font-size:1.5em;padding:10px 0px 20px 0px; "><label class="spb-productdescfont spb-productdesctextcolor" style="color:#d9670e;">SELECT YOUR FIRST ENTREE</label>    <p style="font-size:15px">2 servings</p><span><div class="spb-select">
+          <select data-selector="variant" class="spb-productdescfont spb-productoptiontextcolor spb-productoptionbackground" required name="properties[ENTREE 1]">
+            <option value="" disabled selected>Select One</option>
+            {% for product in collection.products limit:6 %}
+			{% assign variant = product.selected_or_first_available_variant %}
+            <option value="{{variant.id}}">{{ product.title }} </option>
+            {% endfor %}
+          </select></div></span>
+
+        </div>
+        {% else %}
+        {% endif %}
+        <div>
+        {% for product in collection.products limit:6 %}
+		{% assign variant = product.selected_or_first_available_variant %}
+        <div class="grid__item medium-up--one-third">
+          <div id="FeaturedImageZoom-product-template" class="product-single__photo product-single__photo--has-thumbnails" data-zoom="{{ product | img_url: '1024x1024', scale: 2 }}" style="position: relative; overflow: hidden;"> 
+            <img src="{{ product | img_url: '360x240' }}" alt="Tillivery Box" id="FeaturedImage-product-template" class="product-featured-img js-zoom-enabled">
+            <p class="menu_title">{{ product.title }}</p>
+            <p>{{ product.description }}</p>
+          </div>
+          <div style="text-align:center;">
+            {% if product.tags contains 'Vegetarian' %}
+            <div class="vegetarian"></div>
+            {% endif %}
+            {% if product.tags contains 'Gluten Free' %}
+            <div class="gluten_free"></div>
+            {% endif %}
+            {% if product.tags contains 'Vegan' %}
+            <div class="vegan"></div>
+            {% endif %}   
+            {% if product.tags contains 'Dairy Free' %}
+            <div class="dairy_free"></div>
+            {% endif %}              
+          </div>          
+          <div class="tooltip2">Ingredients
+            <span class="tooltiptext2">{{ product.metafields.c_f.product_ingredients }}</span>
+          </div>         
+        </div>
+          {% assign divisible_by_three = forloop.index | modulo: 3 %}
+          {% if divisible_by_three == 0 or forloop.last == true %}
+          <div class="clearfix"></div>
+          {% endif %}           
+        {% endfor %}
+        </div>
+
+        <div>
+        {% assign collection = collections['entrees'] %}
+		{% if customer %}
+        <div style="margin-bottom:40px;text-align:center; border-radius:10px;font-size:1.5em;padding:10px 0px 20px 0px; "><label class="spb-productdescfont spb-productdesctextcolor" style="color:#d9670e;">SELECT YOUR SECOND ENTREE</label>    <p style="font-size:15px">2 servings</p><span><div class="spb-select">
+          <select data-selector="variant" class="spb-productdescfont spb-productoptiontextcolor spb-productoptionbackground" required name="properties[ENTREE 2]">
+            <option value="" disabled selected>Select One</option>
+            {% for product in collection.products limit:6 %}
+			{% assign variant = product.selected_or_first_available_variant %}
+            <option value="{{variant.id}}">{{ product.title }} </option>
+            {% endfor %}
+          </select></div></span>
+
+        </div>
+
+
+        {% for product in collection.products limit:6 %}
+
+		{% assign variant = product.selected_or_first_available_variant %}
+        
+        <div class="grid__item medium-up--one-third">
+          <div id="FeaturedImageZoom-product-template" class="product-single__photo product-single__photo--has-thumbnails" data-zoom="{{ product | img_url: '1024x1024', scale: 2 }}" style="position: relative; overflow: hidden;"> 
+            <img src="{{ product | img_url: '360x240' }}" alt="Tillivery Box" id="FeaturedImage-product-template" class="product-featured-img js-zoom-enabled">
+            <p class="menu_title">{{ product.title }}</p>
+            <p>{{ product.description }}</p>
+          </div>
+          <div style="text-align:center;">
+            {% if product.tags contains 'Vegetarian' %}
+            <div class="vegetarian"></div>
+            {% endif %}
+            {% if product.tags contains 'Gluten Free' %}
+            <div class="gluten_free"></div>
+            {% endif %}
+            {% if product.tags contains 'Vegan' %}
+            <div class="vegan"></div>
+            {% endif %} 
+            {% if product.tags contains 'Dairy Free' %}
+            <div class="dairy_free"></div>
+            {% endif %}             
+          </div>          
+          <div class="tooltip2">Ingredients
+            <span class="tooltiptext2">{{ product.metafields.c_f.product_ingredients }}</span>
+          </div>
+        </div>
+        {% assign divisible_by_three = forloop.index | modulo: 3 %}
+        {% if divisible_by_three == 0 or forloop.last == true %}
+        <div class="clearfix"></div>
+        {% endif %}        
+        {% endfor %}
+        </div>        
+		{% else %}
+        {% endif %}
+        <div style="margin-bottom:40px;text-align:center; border-radius:10px;font-size:1.5em;padding:10px 0px 0px 0px; ">
+          <label class="spb-productdescfont spb-productdesctextcolor" style="color:#d9670e;">SIGNATURE SOURDOUGH LOAF</label>
+          <input data-selector="variant" type="hidden" value="44167873743"/>
+          <p style="font-size:15px">Baked fresh at TILL Kitchen the morning of your delivery </p>
+        </div>
+
+        <div class="grid__item">
+          <div id="FeaturedImageZoom-product-template" class="product-single__photo product-single__photo--has-thumbnails" data-zoom="https://cdn.shopify.com/s/files/1/1837/8723/files/placeholder.jpg?2973850153167893716" style="position: relative; overflow: hidden;">
+            <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/sourdough.jpg?8016748975975573860" alt="Tillivery Box" id="FeaturedImage-product-template" class="product-featured-img js-zoom-enabled" style="width:400px;">
+            <br/>
+            <p style="text-align:center;">Included with your TILLIVERY, our signature sourdough loaf is crafted from premium King Arthur Sir Galahad unbleached flour &amp; locally foraged wild yeast.</p>
+          </div>
+          <div class="tooltip2"style="margin-bottom:180px;">Ingredients
+            <span class="tooltiptext2">Sir Galahad Bread Flour, Water, Salt, Naturally Occurring Yeast</span>
+          </div>
+        </div>
+
+        <select data-productid="11411817295" class="product-form__variants no-js">
+          <option value="44167839631" selected="selected"></option>
+        </select>
+		
+        {% if customer %}
+        {% if day == 'Sunday' or day =='Monday' or day == 'Tuesday' or day == 'Wednesday' %}
+        <div class="product-form__item product-form__item--submit" style="text-align:center">
+          <button type="submit" name="add" id="AddToCart-product-template" class="btn product-form__cart-submit product-form__cart-submit--small" style="display:inline;">
+            Next
+          </button>
+        </div>
+        {% endif %}
+        {% else %}
+        {% endif %}
+
+      </main>
+      </div>
+    </div>
+  </form>
+
+
+{% unless customer %}
+
+<a href="/pages/signup"> <div class="signup_button" style="margin-top:-50px;"></div></a>
+<p align="center">To select your weekly menu items, you must first <a href="https://tillivery.com/account/login">LOG IN or </a><a href="https://tillivery.com/pages/waitlist">SIGN UP.</a></p>
+
+
+{% endunless %}
+
+  <div class="product-single__description rte" itemprop="description"></div>
+
+</div>
+
+
+
+<script>  
+  
+$(function() {
+  $('#weekly-menu').on('submit', function(e) {
+    e.preventDefault();
+    var variants_to_update = {};
+    variants_to_update['38154585996'] = 1;
+    $('#weekly-menu select').each(function(index) {
+      if ($(this).data('selector') == 'variant') {
+        var variant_id = $(this).val();
+        var quantity = (variants_to_update[variant_id] | 0) + 1;
+        variants_to_update[variant_id] = quantity;
+      };
+    });
+//     console.log(variants_to_update);
+    jQuery.ajax({
+      type: 'POST',
+      async: true,
+      url: '/cart/update.js',
+      data: JSON.stringify({
+        updates: variants_to_update
+		}),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      success: function () {window.location.replace('/collections/add-ons')},
+      error: function (err) {}
+    });  
+    
+    return false;
+  });
+});
+  
+</script>

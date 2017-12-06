@@ -1,0 +1,68 @@
+<div class="page-width">
+  <div class="grid">
+
+    <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+
+      <p class="text-center">
+        <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/signup_main.png?6172931041781202551">
+      </p>
+
+      <p align="center"><a href="/account/login"> Already a customer? Log in here!</a></p>
+
+      <p style="height:10px;"></p>
+
+      <p class="text-left" style="margin-top:20px;">
+      <p style="font-weight:bold; font-size:1.5em;">
+
+        Why not give TILL Kitchen's family-style meal delivery a try?</p>   
+
+      <p>When you sign up for a TILLIVERY monthly subscription, you enjoy weekly deliveries of family-style, 3-course meals that serve four for as little as $12.50/person.</p>
+
+      <p style="font-weight:bold;"> STEP 1: WHERE DO YOU LIVE?</p>
+      <p class="text-left" style="margin-top:20px;">First, let's confirm we deliver to your address. For our initial launch, we are delivering within a 10 mile radius from Till Kitchen at 9633 Prominent Point Colorado Springs. Please review the map and select which best describes your location.</p>
+      <br>
+
+      <div id="map" style="height:500px;"></div>
+     
+      <p class="text-left" style="margin-top:20px;">
+      <p style="font-weight:bold; font-size:1.5em;">STEP 2: SELECT ONE</p>
+
+      <a href="/account/register"> <p class="btn_map">
+        <i class="material-icons">adjust</i> I'm IN the Delivery Zone </p></a><br><br>
+      <a href="/pages/out-of-the-delivery-zone">  <p class="btn_map"><i class="material-icons">radio_button_unchecked</i> I'm OUT of the Delivery Zone</p></a><br><br>
+      <a href="/pages/close-to-the-delivery-range">   <p class="btn_map"><i class="material-icons">radio_button_unchecked</i> I'm SO close</p></a><br><br>       
+
+    </div>
+  </div>
+
+  <script>
+
+    function initMap() {
+      // Create the map.
+      var restaurant = {lat: 38.9704705, lng: -104.7461587};
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: restaurant,
+    	zoom: 10
+      });
+      
+      // Add the circle for this city to the map.
+      var cityCircle = new google.maps.Circle({
+        strokeColor: '#d85e00',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#d85e00',
+        fillOpacity: 0.35,
+        map: map,
+        center: restaurant,
+        radius: 16093.4
+      });
+    }
+
+  </script>
+
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbaxGSiElN50NBWNwgHYRyeomjTorjdBk&callback=initMap"></script>
+
+
+
+

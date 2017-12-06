@@ -1,0 +1,106 @@
+<div id="shopify-section-1492143466948" class="shopify-section index-section index-section--flush"><div class="hero hero--large hero__overlay" style="background-image: url(https://cdn.shopify.com/s/files/1/1837/8723/t/8/assets/masthead__box-meals.jpg?16553616216863350704); background-position: center center;">
+  <div class="hero__inner">
+    <div class="page-width text-center">
+
+      <img src="https://cdn.shopify.com/s/files/1/1837/8723/t/8/assets/masthead__box-meals-text.png?3217918001699482859" width="431px" style="margin-top:40px;" alt="Start your order">
+      {% if customer %}
+      <div class="rte-setting mega-subtitle">
+        <p>Get family-style entrees, soup, salad &amp; signature sourdough bread delivered to you each week for a minimum order of $49.99/week!<br>
+        </p>
+        <ul>
+          <li class="material-icons" style="letter-spacing:-17px;">star_ratestar_ratestar_ratestar_rate</li>
+        </ul>
+      </div>
+      {% else %}
+      {% endif %} 
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class="menu--alacarte">
+  <ul>
+    <li>Appetizers</li>
+    <li>Soups</li>
+    <li>Salads</li>
+    <li>Entrées</li>
+    <li>Sides</li>
+    <li>Bread</li>
+    <li>Desserts</li>
+  </ul>
+</div>
+
+<div class="page-width">
+  <div class="grid">
+    <div class="grid__item medium-up--one-whole">
+      <div class="section-header text-center">
+        <h1>Select Your Box Meal</h1>
+      </div>
+
+      <div class="flex-row">
+        {% for product in collections.box-meals.products %}
+        {% assign variant = product.selected_or_first_available_variant %}
+        <div class="flex-col flex-col--33">
+          <div class="menu-card">
+            <div class="menu-card__img box">
+              <img src="{{ product | img_url: '400x308' }}">
+            </div>
+            <div class="menu-card__body">
+              <h4>{{ product.title }}</h4>
+              <p>{{ product.description }}</p>
+              <a class="btn btn-box-meal" data-id="{{variant.id}}">Add To Cart</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>  
+
+  $(function() {
+    $('.btn-box-meal').on('click', function(e) {
+      e.preventDefault();
+      var clicked = $(this);
+      var clicked_width = clicked.width();
+      var clicked_height = clicked.height();
+      console.log(clicked_width);
+      var variants_to_update = {};
+      var variant_id = $(this).data("id");
+      console.log(variant_id);
+      var variant_quantity = (variants_to_update[variant_id] | 0) + 1;
+      console.log(variant_quantity);
+      variants_to_update[variant_id] = variant_quantity;
+      console.log(variants_to_update);
+      jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: '/cart/update.js',
+        data: JSON.stringify({
+          updates: variants_to_update
+        }),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        beforeSend: function(){
+          clicked.width(clicked_width);
+          clicked.height(clicked_height);
+          clicked.text('');
+          clicked.css('pointer-events','none');
+          clicked.append('<div class="loader">Loading...</div>');
+        },
+        success: function () {
+          setTimeout(function(){
+            //             $('.loader').remove();
+            window.location.href = "/cart";
+          }, 1500);          
+        },
+        error: function (err) {}
+      });  
+
+      return false;
+    });
+  });
+
+</script>

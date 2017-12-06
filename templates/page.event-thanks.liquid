@@ -1,0 +1,67 @@
+{% layout 'event-layout' %}
+
+<div class="hero">
+  <div class="logo"><img src="https://cdn.shopify.com/s/files/1/1837/8723/files/Tillivery_29ab3e46-48a8-47aa-ab37-e391e46e59dd.png?6882447071651269700"></div>
+  <div>
+    <h1>{{ page.title }}</h1> 
+    <p>We've received your R.S.V.P.</p>
+  </div>
+
+</div>
+
+<div class="page-width">
+  <div class="grid grid--uniform">
+    <div id="content" class="grid__item medium-up--two-thirds medium-up--push-one-sixth text-center">
+      <p class="lead">We look forward to seeing you August 6th!</p>
+      <a href="/" class="btn btn__check green"><span class="btn__text">Back to TILLIVERY.com</span></a>
+      <p>You will not receive an automatic confirmation email upon submitting this form. You will receive a text and email reminder and RSVP confirmation closer to 8/6.</p>
+      <address>9633 Prominent Point<br>
+        Colorado Springs, CO 80924</address>
+      <p>For more info, please visit <a href="/">www.tillivery.com</a></p>
+    </div>
+  </div>
+</div>
+
+<script>  
+
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(window.location.search);
+    if (results == null) {
+      return "";
+    } else {
+      return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+  }  
+
+  $(function() {
+
+    function addFormElem(paramName, fieldName) {
+      var paramValue = getParameterByName(paramName);
+      var $utmEl = $("<input type='hidden' name='" + fieldName + "' value='" + paramValue + "'>");
+      if (paramValue != "") {
+        $("#event-registration").prepend($utmEl);
+      }
+    }
+
+    // Note: Only change the values after ":"
+    // They match the field values in Marketo for the utm codes
+    var utmParams = {
+      "utm_source": "utm_source",
+      "utm_medium": "utm_medium",
+      "utm_campaign": "utm_campaign",
+      "utm_content": "utm_content",
+      "utm_term": "utm_term",
+      "ppc_adgroup": "ppc_adgroup",
+      "ppc_loc": "ppc_loc"
+    };
+
+    for (var param in utmParams) {
+      addFormElem(param, utmParams[param]);
+    }
+
+  }); 
+
+</script>

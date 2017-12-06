@@ -1,0 +1,505 @@
+<script>
+  {% for o in customer.draft_orders %}
+  console.log(o.id);
+  {% endfor %}
+</script>
+
+{% if customer.metafields.subscriptions.customer_string %}
+<!--BeginRechargeCode-->
+<p><a href="/tools/recurring/customer/{{customer.metafields.subscriptions.customer_string}}/subscriptions/">Manage Subscriptions</a></p>
+<!--EndRechargeCode-->
+{% endif %}
+
+<div class="page-width">
+  <div class="section-header text-center" style="margin-bottom:20px;">
+
+    <img src="https://cdn.shopify.com/s/files/1/1837/8723/files/myaccount.jpg?5992891706592820951" style="margin-bottom:190px; text-align:center; margin: 0 auto; ">
+
+    <div style="clear:both;"></div>
+
+    <hr/>
+
+    <div class="body">
+
+      <!-- tabs -->
+      <div class="sky-tabs sky-tabs-pos-left sky-tabs-anim-flip sky-tabs-response-to-icons">
+        <input type="radio" name="sky-tabs" checked id="sky-tab1" class="sky-tab-content-1">
+        <label for="sky-tab1"><span><span><i class="fa fa-bell-o"></i>ORDER</span></span></label>
+
+        <input type="radio" name="sky-tabs" id="sky-tab2" class="sky-tab-content-2">
+        <label for="sky-tab2"><span><span><i class="fa fa-calendar"></i>HISTORY</span></span></label>
+
+        <input type="radio" name="sky-tabs" id="sky-tab3" class="sky-tab-content-3">
+        <label for="sky-tab3"><span><span><i class="fa fa-map-marker" aria-hidden="true"></i>ACCOUNT</span></span></label>
+
+        <input type="radio" name="sky-tabs" id="sky-tab4" class="sky-tab-content-4">
+        <label for="sky-tab4"><span><span><i class="fa fa-credit-card"></i>PAYMENT</span></span></label>
+
+        <input type="radio" name="sky-tabs" id="sky-tab5" class="sky-tab-content-5">
+        <label for="sky-tab5"><span><span><i class="fa fa-cutlery"></i>DIET</span></span></label>
+
+        <input type="radio" name="sky-tabs" id="sky-tab6" class="sky-tab-content-6">
+        <label for="sky-tab6"><a href="/account/logout"><span><span><i class="fa fa-times"></i>LOGOUT</span></span></a></label>
+
+        <ul>
+          <li class="sky-tab-content-1">					
+            <div class="typography">
+              <h2>MY ACCOUNT</h2>
+              <h3>Welcome Back to TILLIVERY!</h3> <br>
+
+              {% if customer.metafields.customer_attribute['stripe-customer'] == blank %}
+              <div class="payment-alert">
+                <h4 class="alert-text">We've heard your feedback and recently upgraded our ordering and billing process.  We hope these changes improve your weekly checkout experience.  To place your order, please re-enter payment details below. Thank you for your patience and help!</h4><br>
+                <a href="/account?view=edit-payment"><div class="btn alert" style="background-color:#d66026">ENTER PAYMENT INFO HERE</div></a>
+              </div>
+              {% else %}
+              <div style="text-align:left; color:#788188; margin: 0 auto;">            
+                <strong>Welcome to TILLIVERY!</strong>  <br/><br/>
+
+                We want to deliver joy to your family each week by making busy weeknight dinners easier and more delicious. To get started, just click the button below to customize next week’s meal delivery. If you are not able to place your order by Wednesday at midnight, it’s no problem. We will send you the Chef’s Choice meal for the week.
+                <br/><br/>
+
+
+                {% if customer.tags contains 'Skip' %}
+                <div id="skipped-wrapper">
+                  <p>Looks like you've decided to skip your TILLIVERY this week. If you'd like to receive a TILLIVERY this week, cancel the skip.</p>
+                  <a id="skipped" class="btn btn__check"><span class="btn__text">Cancel Skip</span></a>
+                </div>
+                <div id="skip-wrapper" style="display: none;">
+                  {% capture day %}{{ 'now' | date: '%A' }}{% endcapture %}
+                  {% if day == 'Sunday' or day == 'Monday' or day == 'Tuesday' or day == 'Wednesday' %}
+                  <a id="orderButton" href="/products/thismonthsmenu" class="btn btn__check green"><span class="btn__text">Place Your Order</span></a> 
+                  {% endif %}                
+                  <p>Need to skip a week? <a id="skip">Skip this week <i class="fa fa-angle-right"></i></a>
+                </div>
+                {% else %}
+                <div id="skip-wrapper">
+                  {% capture day %}{{ 'now' | date: '%A' }}{% endcapture %}
+                  {% if day == 'Sunday' or day == 'Monday' or day == 'Tuesday' or day == 'Wednesday' %}
+                  <a id="orderButton" href="/products/thismonthsmenu" class="btn btn__check green"><span class="btn__text">Place Your Order</span></a> 
+                  {% endif %}                
+                  <p>Need to skip a week? <a id="skip">Skip this week <i class="fa fa-angle-right"></i></a>
+                </div>
+                <div id="skipped-wrapper" style="display: none;">
+                  <p>Looks like you've decided to skip your TILLIVERY this week. If you'd like to receive a TILLIVERY this week, cancel the skip.</p>                  
+                  <a id="skipped" class="btn btn__check"><span class="btn__text">Cancel Skip</span></a>
+                </div>
+                {% endif %}
+
+                <br/>
+
+                <div style="text-align:left; color:#ccc; margin: 0 auto;">
+                  <span class="material-icons" style="margin-right:10px;">done</span>
+                  <strong>ORDER BY</strong> Nov. <span id="prevOrderDate">29</span> | <strong>DELIVERED</strong> Dec. 5-6</div>
+
+                <div style="text-align:left; margin: 0 auto;">
+                  <span class="material-icons" style="margin-right:10px;">schedule </span>
+                  <strong>ORDER BY</strong> Dec. 6 | <strong>DELIVERED</strong> Dec. 12-13</div>
+
+                <div style="text-align:left; color:#ccc; margin: 0 auto;">
+                  <span class="material-icons" style="margin-right:10px;">schedule </span>
+                  <strong>ORDER BY</strong> Dec. 6 | <strong>DELIVERED</strong> Dec. 12-13</div>
+                <br/>
+
+              </div>
+              {% endif %}
+            </div>
+
+            <div style="height:50px;"></div>
+
+          </li>
+
+          <li class="sky-tab-content-2">
+            <div class="typography">
+              <h2>HISTORY</h2>
+
+              {% paginate customer.orders by 20 %}
+              {% if customer.orders.size != 0 %}
+
+              <table class="responsive-table">
+                <thead>
+                  <tr>
+                    <th>{{ 'customer.orders.order_number' | t }}</th>
+                    <th>{{ 'customer.orders.date' | t }}</th>
+                    <th>{{ 'customer.orders.payment_status' | t }}</th>
+                    <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                    <th>{{ 'customer.orders.total' | t }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in customer.orders %}
+                  <tr>
+                    <td data-label="{{ 'customer.orders.order_number' | t }}">
+                      <a href="{{ order.customer_url }}" class="btn btn--secondary btn--small">{{ order.name }}</a>
+                    </td>
+                    <td data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: format: 'month_day_year' }}</td>
+                    <td data-label="{{ 'customer.orders.payment_status' | t }}">{{ order.financial_status_label }}</td>
+                    <td data-label="{{ 'customer.orders.fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                    <td data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              {% else %}
+
+              <p>{{ 'customer.orders.none' | t }}</p>
+
+              {% endif %}
+              {% if paginate.pages > 1 %}
+              {% include 'pagination' %}
+              {% endif %}
+              {% endpaginate %}
+            </div>
+
+            <hr style="border: 1px; border-bottom: 1px solid #e8e9eb; margin-top:20px; margin-bottom:20px;">
+
+            <strong>"Fullfilled"</strong>
+            <br>Our chef is working on your menu. Your delivery date and time will be available on your main Account Page on Thursday afternoon before your delivery.
+            <br> <br>
+            <strong>"Unfillfilled"</strong>
+            <br>Your order has been placed.
+
+          </li>
+
+          <li class="sky-tab-content-3">
+            <div class="typography">
+              <h1>ACCOUNT</h1>
+              <div class="grid__item medium-up--one-half">
+
+                <h4 style="margin-top:20px;">Delivery Address</h4>    
+
+                {{ customer.default_address | format_address }}
+
+                <p  class="btn_account" ><a href="/account/addresses">EDIT ADDRESS</a></p>
+                <br/><br/>
+                <hr class="style3">
+                <h4 style="margin-top:20px;">Email</h4>  
+                <br/>
+                {{ customer.email }} 
+
+                <br/><br/>
+
+                <div class="btn_account">{% include "scm-attribute-edit-account-link" %}</div>
+
+                <div id="RecoverPasswordForm" >
+                  <br/>
+                  <hr class="style3">
+                  <div class="text-center">
+                    <h4 style="margin-top:20px;">Password</h4>   
+                    <p>Enter your email to reset your password</p>
+                  </div>
+
+                  <div class="form-vertical">
+                    {% form 'recover_customer_password' %}
+
+                    {{ form.errors | default_errors }}
+
+                    {% comment %}
+                    Add a hidden span to indicate the form was submitted succesfully.
+                    {% endcomment %}
+                    {% if form.posted_successfully? %}
+                    <span class="hide reset-password-success"></span>
+                    {% endif %}
+
+                    <label for="RecoverEmail"></label>
+                    <br/>
+                    <input type="email" value="" name="email" id="RecoverEmail" class="input-full"autocorrect="off" autocapitalize="off" style="border-style:solid; border-width:.5px; border-color:#ccc;">
+
+                    <div class="text-center">
+                      <p>
+                        <input type="submit" class="btn_account" value="{{ 'customer.recover_password.submit' | t }}">
+                      </p>
+
+
+                    </div>
+                    {% endform %}
+                  </div>
+
+                </div>  </div>  </div>
+
+          </li>            
+
+          <li class="sky-tab-content-4">
+            <div class="typography">
+              <h1>PAYMENT</h1>
+              <p>Here is the credit card information that we have on file. If you would like to change your payment, please select edit payment. If you need support, please contact our customer service at 719-470-6046.<br/><br/>
+
+              <div class="clearfix large_form ca-attr ca-account">
+
+                {% assign metafields = customer.metafields %}
+
+                {% assign last_four = metafields.customer_attribute['last-four'] %}
+                {% assign exp_month = metafields.customer_attribute['expiration-month'] %}
+                {% assign exp_year = metafields.customer_attribute['expiration-year'] %}
+                {% assign credit_card_provider = metafields.customer_attribute['credit-card-provider'] %}
+
+                {% assign stripe_token = metafields.customer_attribute['stripe-token'] %}
+                {% assign stripe_customer = metafields.customer_attribute['stripe-customer'] %}
+                <div id='card-info'>{% if credit_card_provider contains 'American' %}<i class="fa fa-cc-amex"></i>{% else %}<i class="fa fa-cc-{{ credit_card_provider | downcase }}"></i>{% endif %} **** **** **** <span>{{ last_four }}</span> EXP: <span>{{ exp_month }}/{{ exp_year }}</span></div>
+
+                <div class="btn_account" style="color:#FFF;">
+                  <a class="ca-account" href="/account?view=edit-payment">Edit Payment</a>
+                </div>
+
+              </div>
+            </div>
+          </li>	
+
+          <li class="sky-tab-content-5">
+            <div class="typography">
+              <h1>Dietary Preference</h1>
+              <p>Please select your dietary preference below so we know which meal to send you in the case that you don't place a custom order.</p>
+              <!--               <form action="//secomapp.com/customer_attribute/api/account" method="post">
+<input type="hidden" name="id" value="{{customer.id}}">
+<input type="hidden" name="shop" value="tillivery.myshopify.com">
+
+<div class="form-vertical">
+<div class="clearfix large_form ca-attr ca-account">
+<label class="ca-label ca-multiselect-label label" for="foods-you-can-eat"></label>
+<div class="ca-value ca-multiselect text">
+<section>
+<div class="ca-checkbox ca-inline">
+<img onclick="jQuery(this).parent().find('input').click();" src="">
+
+<div class="">
+{% unless customer.metafields.customer_attribute['foods-you-can-eat'] == empty %}
+{% assign attribute_values = customer.metafields.customer_attribute['foods-you-can-eat'] %}
+{% if attribute_values contains ',Beef' or attribute_values contains 'Beef,' or attribute_values == 'Beef' %}
+{% assign attribute_value = 'checked' %}
+{% else %}
+{% assign attribute_value = '' %}
+{% endif %}
+{% else %}
+{% assign attribute_value = "" %}
+{% endunless %}
+<input class="ca-option" type="checkbox" name="foods-you-can-eat[]" value="Beef"
+data-value="Beef" {{attribute_value}}
+
+id="foods-you-can-eat">
+<label>Beef</label>
+</div>
+</div>
+<div class="ca-checkbox ca-inline">
+<img onclick="jQuery(this).parent().find('input').click();" src="">
+<div class="">
+{% unless customer.metafields.customer_attribute['foods-you-can-eat'] == empty %}
+{% assign attribute_values = customer.metafields.customer_attribute['foods-you-can-eat'] %}
+{% if attribute_values contains ',Poultry' or attribute_values contains 'Poultry,' or attribute_values == 'Poultry' %}
+{% assign attribute_value = 'checked' %}
+{% else %}
+{% assign attribute_value = '' %}
+{% endif %}
+{% else %}
+{% assign attribute_value = "" %}
+{% endunless %}
+<input class="ca-option" type="checkbox" name="foods-you-can-eat[]" value="Poultry"
+data-value="Poultry" {{attribute_value}}
+
+id="foods-you-can-eat">
+<label>Poultry</label>
+</div>
+</div>
+<div class="ca-checkbox ca-inline">
+<img onclick="jQuery(this).parent().find('input').click();" src="">
+<div class="">
+{% unless customer.metafields.customer_attribute['foods-you-can-eat'] == empty %}
+{% assign attribute_values = customer.metafields.customer_attribute['foods-you-can-eat'] %}
+{% if attribute_values contains ',Fish' or attribute_values contains 'Fish,' or attribute_values == 'Fish' %}
+{% assign attribute_value = 'checked' %}
+{% else %}
+{% assign attribute_value = '' %}
+{% endif %}
+{% else %}
+{% assign attribute_value = "" %}
+{% endunless %}
+<input class="ca-option" type="checkbox" name="foods-you-can-eat[]" value="Fish"
+data-value="Fish" {{attribute_value}}
+
+id="foods-you-can-eat">
+<label>Fish</label>
+</div>
+</div>
+<div class="ca-checkbox ca-inline">
+<img onclick="jQuery(this).parent().find('input').click();" src="">
+<div class="">
+{% unless customer.metafields.customer_attribute['foods-you-can-eat'] == empty %}
+{% assign attribute_values = customer.metafields.customer_attribute['foods-you-can-eat'] %}
+{% if attribute_values contains ',Pork' or attribute_values contains 'Pork,' or attribute_values == 'Pork' %}
+{% assign attribute_value = 'checked' %}
+{% else %}
+{% assign attribute_value = '' %}
+{% endif %}
+{% else %}
+{% assign attribute_value = "" %}
+{% endunless %}
+<input class="ca-option" type="checkbox" name="foods-you-can-eat[]" value="Pork"
+data-value="Pork" {{attribute_value}}
+
+id="foods-you-can-eat">
+<label>Pork</label>
+</div>
+</div>
+<div class="ca-checkbox ca-inline">
+<img onclick="jQuery(this).parent().find('input').click();" src="">
+<div class="">
+{% unless customer.metafields.customer_attribute['foods-you-can-eat'] == empty %}
+{% assign attribute_values = customer.metafields.customer_attribute['foods-you-can-eat'] %}
+{% if attribute_values contains ',Nuts' or attribute_values contains 'Nuts,' or attribute_values == 'Nuts' %}
+{% assign attribute_value = 'checked' %}
+{% else %}
+{% assign attribute_value = '' %}
+{% endif %}
+{% else %}
+{% assign attribute_value = "" %}
+{% endunless %}
+<input class="ca-option" type="checkbox" name="foods-you-can-eat[]" value="Nuts"
+data-value="Nuts" {{attribute_value}}
+
+id="foods-you-can-eat">
+<label>Nuts</label>
+</div>
+</div>
+</section>
+</div>                        </div>
+<p class="btn_account" style="height:30px;">
+<input class="btn" type="submit" value="Update" />
+</p>
+
+</div>
+</form>           -->
+              <form id="dietary-form">
+                <div><input type="radio" name='dietary-preference' value="47936985740"> No Preference</div>
+                <div><input type="radio" name='dietary-preference' value="47934480652"> Vegetarian</div>
+                <div><input type="radio" name='dietary-preference' value="47934480652"> Vegan</div>
+                <div><input type="radio" name='dietary-preference' value="47936634124"> Gluten Free</div>
+              </form>
+
+            </div>
+
+          </li>	
+
+          <li class="sky-tab-content-6">
+            <div class="typography">
+              <h1>LOGOUT</h1>
+              <div class="grid__item medium-up--one-third">
+                <div style="margin-bottom:20px">{{ 'layout.customer.log_out' | t | customer_logout_link }}
+                </div>
+
+                <p><a href="/account/addresses" class="btn btn--small" style="padding-top:7px; text-align:left;">EDIT DELIVERY ADDRESS</a></p>
+              </div>
+
+            </div>
+          </li>
+        </ul>
+
+      </div>
+      <!--/ tabs -->
+
+    </div>
+
+    <script>
+      $('#skip').on('click', function() {
+        $(this).prop("disabled",true);
+        $.ajax({
+          url: 'https://hooks.zapier.com/hooks/catch/2280294/5t01dr/?shopify_customer_id={{customer.id}}',
+          type: 'get',
+          beforeSend: function(){
+          $('#skip').hide();
+          $('#skip-wrapper').append('<div class="loader">Loading...</div>');
+        },
+               success: function(){
+          //             $('#skip').addClass('skip__success');
+          setTimeout(function(){
+            $('#skip-wrapper').fadeOut(1000, function() {
+              $('.loader').remove();
+              $('#skip').show();
+              $('#skip-wrapper a').removeClass('skip__success');
+              $('#skipped-wrapper').fadeIn(750);
+            });
+          }, 2000);
+        }
+      });      	
+      });
+
+      $('#skipped').on('click', function() {
+        $(this).prop("disabled",true);
+        $.ajax({
+          url: 'https://hooks.zapier.com/hooks/catch/2280294/5hyhnp/?shopify_customer_id={{customer.id}}',
+          type: 'get',
+          success: function(){
+            $('#skipped').addClass('skip__success');
+            setTimeout(function(){
+            $('#skipped-wrapper').fadeOut(1000, function() {
+          	$('#skipped-wrapper a').removeClass('skip__success')
+            $('#skip-wrapper').fadeIn(750);
+              });
+            }, 1000);
+          }
+        });      	
+      });       
+    </script>   
+
+    <script>
+      $("input[name='dietary-preference']").change( function(){
+  		
+        var formData = {
+          'shopify_customer_id': {{customer.id}},
+          'dietary_preference': $(this).val()
+        };
+        
+        console.log(formData);
+        
+        $.ajax({
+          url: 'https://subscribery.herokuapp.com/api/shopifycustomer/diet',
+          type: 'post',
+          data: formData,
+          success: function(){
+            		
+      	  }
+        }); 
+        
+      });
+    </script>
+
+    <script>
+      {% assign preference = metafields.subscribery['dietary-preference'] %}
+      $(function() {
+        var preference = {{ preference }};
+        $('#dietary-form input').each(function() {
+            if(preference == $(this).val()) {
+                $(this).prop("checked", true);
+            }
+        });
+      });
+    </script>
+
+    <!--     <script>
+function setDates() {
+var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var curr = new Date();
+var wedsDate = new Date();
+var prevWeds = new Date();
+var prevTues = new Date();
+var nextWeds = new Date();
+var nextTues = new Date();
+var nextnextWeds = new Date();
+var nextnextTues = new Date();
+var wednesday = 3 - curr.getDay();
+wedsDate.setDate(wedsDate.getDate()+wednesday);
+prevWeds.setDate(wedsDate.getDate() - 7);
+prevTues.setDate(wedsDate.getDate() - 8);
+nextWeds.setDate(wedsDate.getDate() + 7);
+nextTues.setDate(wedsDate.getDate() + 6);
+nextnextWeds.setDate(wedsDate.getDate() + 14);
+nextnextTues.setDate(wedsDate.getDate() + 13);        
+var month = (monthNames[wedsDate.getMonth()]);
+var day = wedsDate.getDate().toString();
+var orderDay = month + ' ' + day;
+console.log(prevTues);
+$('#prevOrderDate').text(prevWeds);
+}
+$(function() {
+setDates();
+});
+</script> -->

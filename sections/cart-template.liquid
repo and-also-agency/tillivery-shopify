@@ -1,0 +1,149 @@
+<div class="page-width" data-section-id="{{ section.id }}" data-section-type="cart-template">
+
+  {% if cart.item_count > 0 %}
+  
+  <div class="section-header">
+    <h1>In Your Order</h1>
+  </div>
+  
+  <form action="/cart" method="post" novalidate class="cart">
+    <table class="cart-items">
+      <thead>
+        <tr>
+          <th colspan="3">Item</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart.items %}
+        <tr class="cart-item">
+          <td class="cart-item__delete"><a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="btn btn--small btn--secondary cart__remove"><i class="fa fa-times"></i></a></td>
+          <td class="cart-item__img"><img class="cart__image" src="{{ item | img_url: '60x60', scale: 2 }}" alt="{{ item.title | escape }}"></td>
+          <td class="cart-item__title">{{ item.product.title }}</td>
+          <td class="cart-item__price">{{ item.price | money }}</td>
+          <td class="cart-item__quantity">
+            <div class="cart__qty">
+              <label for="updates_{{ item.key }}" class="cart__qty-label">{{ 'cart.label.quantity' | t }}</label>
+              <input class="cart__qty-input" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0" pattern="[0-9]*">
+            </div>   
+          </td>
+          <td class="cart-item__total">{{ item.price | times: item.quantity | money }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="cart-footer__filler" colspan="4"></td>
+          <td class="cart-footer__title">Subtotal</td>
+          <td class="cart-footer__subtotal">{{ cart.total_price | money }}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="cart-errors" style="display:none;">
+      <div class="no-payment" style="display:none;">We don't see a payment method on file for you. Please <a href="/account?view=edit-payment">add a payment method</a> before ordering.</div>
+      <div class="no-delivery-address" style="display:none;">We don't see a delivery address on file for you. Please <a href="/account/addresses">add a delivery address</a> before ordering.</div>
+    </div>
+
+    {% include "scm-attribute-cart" %}
+
+    <footer class="cart__footer">
+      <div class="grid">
+        {% if section.settings.cart_notes_enable %}
+        <div class="grid__item medium-up--one-half cart-note">
+          <label for="CartSpecialInstructions" class="cart-note__label small--text-center">{{ 'cart.general.note' | t }}</label>
+          <textarea name="note" id="CartSpecialInstructions" class="cart-note__input">{{ cart.note }}</textarea>
+        </div>
+        {% endif %}
+
+        <div class="grid__item medium-up--one-half">
+          <a href="/products/thismonthsmenu" class="cart-btn cart-btn--secondary" >BACK TO MENU</a>
+        </div>          
+
+        <div class="grid__item medium-up--one-half text-right small--text-center">                    
+          {% if customer %}
+          <input type="submit" name="update" class="cart-btn cart-btn--secondary" value="Update Cart">
+          <a id="place-order" class="cart-btn">Review Order</a>
+          {% else %}
+          <p>You must be <a href="/account/login">logged in</a> to checkout</p>
+          {% endif %}
+          {% comment %}
+          {% if additional_checkout_buttons %}
+          <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+          {% endif %}
+          {% endcomment %}
+        </div>
+      </div>
+    </footer>
+  </form>
+
+
+  {% else %}
+  <div class="empty-page-content text-center">
+    <h1>{{ 'cart.general.title' | t }}</h1>
+    <p class="cart--empty-message">{{ 'cart.general.empty' | t }}</p>
+    <div class="cookie-message">
+      <p>{{ 'cart.general.cookies_required' | t }}</p>
+    </div>
+    <a href="/pages/menu" class="btn btn--has-icon-after cart__continue-btn">Build Your TILLIVERY{% include 'icon-arrow-right' %}</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+
+  $(function() {
+    $('#place-order').on('click', function(e) {
+      e.preventDefault();
+      var customerOrderCount = '{{ customer.orders_count }}';
+            console.log(customerOrderCount);
+      if(customerOrderCount == 0) {
+        var cooler = {};
+        cooler['41250223692'] = 1;    
+        jQuery.ajax({
+          type: 'POST',
+          async: true,
+          url: '/cart/update.js',
+          data: JSON.stringify({
+            updates: cooler
+          }),
+          dataType: 'json',
+          contentType: 'application/json; charset=utf-8',
+          success: validateAccount,
+          error: function (err) {}
+        });          
+      } else {
+        validateAccount();
+      }
+    });
+    function validateAccount() {
+      var customerID = '{{ customer.metafields.customer_attribute['stripe-customer'] }}';
+      var customerAddress = '{{ customer.default_address }}';
+      if(customerID == '' && customerAddress == '') {
+        $('.cart-errors').add('.no-payment').fadeIn(500);
+        $('.no-delivery-address').fadeIn(500);
+      } else if (customerID == '') {
+        $('.cart-errors').add('.no-payment').fadeIn(500);   
+      } else if (customerAddress == '') {
+        $('.cart-errors').add('.no-delivery-address').fadeIn(500);
+      } else {
+        window.location.href = "/cart?view=confirm";
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+"name": "Cart page",
+"settings": [
+{
+"type": "checkbox",
+"id": "cart_notes_enable",
+"label": "Enable cart notes",
+"default": false
+}
+]
+}
+{% endschema %}

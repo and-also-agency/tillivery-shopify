@@ -1,0 +1,174 @@
+<form id="customer-account-edit-payment" action="/account" method="get">
+  
+  <input type="hidden" name="shopify_customer_id" value="{{customer.id}}">
+  
+  <div class="page-width">
+        <div class="text-center">
+          <h1>Edit Your Payment Method</h1>
+        </div>
+    <div class="grid">
+      <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+
+        <div class="form-vertical">
+          
+          {% comment %} Stored payment metadata {% endcomment %}
+          
+<!--           Commenting this out for testing -->
+          <div style="display: none;">
+<!--           <div> -->
+            <div class="clearfix large_form ca-attr ca-account">
+              <label class="ca-label ca-static-label label" for="stripe_token">Stripe Token</label>
+
+              <input class="ca-value ca-input ca-text text" size="30" type="text" name="stripe_token" id="stripe_token" value="" placeholder="Stripe Token"/>
+            </div>
+            <div class="clearfix large_form ca-attr ca-account">
+              <label class="ca-label ca-static-label label" for="stripe_customer">Stripe Customer ID</label>
+
+              <input class="ca-value ca-input ca-text text" size="30" type="text" name="stripe_customer_id" id="stripe_customer_id" value="{{customer.metafields.customer_attribute['stripe-customer']}}"  placeholder="Stripe Customer ID"/>
+            </div>
+          </div>
+          {% comment %} END Stored payment metadata {% endcomment %}
+          
+          {% comment %} START Stripe Elements Embed {% endcomment %}
+          <div class="clearfix large_form ca-attr ca-account">
+            <form action="/charge" method="post" id="payment-form">
+              <div class="form-row">
+                <label for="card-element">
+                  Add/Edit Your Credit or Debit Card
+                </label>
+                <div id="card-element">
+                  <!-- a Stripe Element will be inserted here. -->
+                </div>
+
+                <!-- Used to display form errors -->
+                <div id="card-errors" role="alert"></div>
+              </div>
+            </form>
+          </div>
+          
+          <p class="text-center" style="margin-top: 30px">
+            <button class="btn" type="submit" value="Update Payment Information" style="position: relative;" >
+              <div class="btn-text">Update Payment Information</div> 
+              <div class="btn-spinner">
+                <i class="fa fa-spinner fa-spin" style="font-size: 25px;"></i>
+              </div>
+          </button>
+            
+          </p>
+          <p class="text-center"><a href="/account">Cancel</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<style>
+  
+  .btn-spinner {
+    position: absolute;
+    margin: auto;
+    width: 24px;
+    height: 24px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0;
+  }
+  
+  .loading > .btn-text {
+    opacity: 0;
+  }
+  
+  .loading > .btn-spinner {
+    z-index: 10;
+    opacity: 1;
+  }
+
+</style>
+
+<script>
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    var style = {
+      base: {
+        // Add your base input styles here. For example:
+        fontSize: '16px',
+        lineHeight: '24px'
+      }
+    };
+
+    // Create an instance of the card Element
+    var card = elements.create('card', {
+      hidePostalCode: true,
+      style: style
+    });
+
+    // Add an instance of the card Element into the `card-element` <div>
+    card.mount('#card-element');
+
+    card.addEventListener('change', function(event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }              
+    });
+
+    // Create a token or display an error when the form is submitted.
+    var form = document.getElementById('customer-account-edit-payment');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      $(":submit").addClass("loading").prop("disabled",true);
+
+      stripe.createToken(card).then(function(result) {
+        if (result.error) {
+          // Inform the user if there was an error
+          var errorElement = document.getElementById('card-errors');
+          errorElement.textContent = result.error.message;
+	      $(":submit").removeClass("loading").prop("disabled","");
+        } else {
+          // Send the token to your server
+          stripeTokenHandler(result.token);
+        }
+      });
+    });
+
+    function stripeTokenHandler(token) {
+      // Insert the token ID into the form so it gets submitted to the server
+      var form = document.getElementById('customer-account-edit-payment');
+
+      var stripeInput = document.getElementById('stripe_token');
+      stripeInput.setAttribute('value', token.id);
+      
+      zapierHook(form);
+      };
+  
+  // Submit the form data to webhook and redirect to /account
+  
+  function zapierHook (form) {
+    $.ajax({
+      url: 'https://subscribery.herokuapp.com/api/customer/',
+      type: 'post',
+      data: $(form).serialize(),
+      success: function(){
+        form.submit();
+      },
+      error: function(request, status, e) {
+        console.log(e);
+        result = jQuery.parseJSON(request.responseText);
+        var errorElement = document.getElementById('card-errors');
+        errorElement.textContent = result.error.message;
+	    $(":submit").removeClass("loading").prop("disabled","");
+      }
+    });
+  };
+
+
+</script>
+{% comment %} END Stripe Elements Embed {% endcomment %}

@@ -1,0 +1,51 @@
+<form action="//ca.secomapp.com/api/account" method="post">
+    <input type="hidden" name="id" value="{{customer.id}}">
+    <input type="hidden" name="shop" value="tillivery.myshopify.com">
+
+    <div class="page-width">
+        <div class="grid">
+            <div class="grid__item medium-up--one-half medium-up--push-one-quarter">
+                <div class="section-header text-center">
+                    <h1>Edit Your Account</h1>
+                    <a href="/account">Back to Account</a>
+                </div>
+
+                <div class="form-vertical">
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="last-four">Last Four</label>
+
+<p class="ca-value ca-static text" id="last-four"></p>
+                        </div>
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="expiration-month">Expiration Month</label>
+
+<p class="ca-value ca-static text" id="expiration-month"></p>
+                        </div>
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="expiration-year">Expiration Year</label>
+
+<p class="ca-value ca-static text" id="expiration-year"></p>
+                        </div>
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="credit-card-provider">Credit Card Provider</label>
+
+<p class="ca-value ca-static text" id="credit-card-provider"></p>
+                        </div>
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="stripe-token">Stripe Token</label>
+
+<p class="ca-value ca-static text" id="stripe-token"></p>
+                        </div>
+                                            <div class="clearfix large_form ca-attr ca-account">
+                            <label class="ca-label ca-static-label label" for="stripe-customer">Stripe Customer</label>
+
+<p class="ca-value ca-static text" id="stripe-customer"></p>
+                        </div>
+                                        <p class="text-center">
+                        <input class="btn" type="submit" value="Update" />
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
